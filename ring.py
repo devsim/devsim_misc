@@ -1,6 +1,6 @@
 import pygmsh
 
-#def output(geom, volumes):
+# def output(geom, volumes):
 #    print(geom.get_code())
 #    ivol = 0
 #    isurf = 0
@@ -11,24 +11,25 @@ import pygmsh
 #        else:
 #            print('Physical Surface("%s") = {s%d};'%(vol[0], isurf))
 #            isurf +=1
-        
+
+
 def geometry():
     geom = pygmsh.opencascade.Geometry(
         characteristic_length_min=0.1,
         characteristic_length_max=0.1,
     )
 
-    # p-implants 
-    disk = geom.add_cylinder([0.0, 0.0, 0.0],   [0,0,.1], 0.75)
+    # p-implants
+    disk = geom.add_cylinder([0.0, 0.0, 0.0],   [0, 0, .1], 0.75)
 
     # n-bulk
-    bulk = geom.add_box([-1.0, -1.0, 0.0], [2, 2,-1.5])
+    bulk = geom.add_box([-1.0, -1.0, 0.0], [2, 2, -1.5])
 
     # n-layer
     nlayer = geom.add_box([-1.0, -1.0, -1.5], [2, 2, -0.1])
 
     # contact regions used to identify contacts
-    top = geom.add_cylinder([0.0, 0.0, 0.1],   [0,0,.1], 0.75)
+    top = geom.add_cylinder([0.0, 0.0, 0.1],   [0, 0, .1], 0.75)
     bot = geom.add_box([-1.0, -1.0, -1.6], [2, 2, -0.1])
 
     #geom.add_physical(top_vol, 'top')
@@ -44,10 +45,10 @@ def geometry():
     geom.add_raw_code('Coherence;\n')
 
     with open('ring.geo', 'w') as f:
-      f.write(geom.get_code())
+        f.write(geom.get_code())
 
     with open('ring.yaml', 'w') as f:
-      f.write('''
+        f.write('''
 name_priority:
   - top
   - bot
@@ -69,8 +70,7 @@ interfaces:
   - interface: bot
     regions: [bot_volume, nlayer]
 ''')
-    
+
 
 if __name__ == '__main__':
     geometry()
-
