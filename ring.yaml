@@ -1,0 +1,21 @@
+
+name_priority:
+  - top
+  - bot
+  - disk
+  - bulk
+  - nlayer
+contact_regions:
+  - contact: top_volume
+    remove: True
+  - contact: bot_volume
+    remove: True
+regions:
+  - region: disk
+  - region: bulk
+  - region: nlayer
+interfaces:
+  - interface: top
+    regions: [top_volume, disk]
+  - interface: bot
+    regions: [bot_volume, nlayer]
