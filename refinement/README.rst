@@ -10,6 +10,7 @@ The ``.geo`` file is used to create an initial mesh.  An initial 2D mesh is crea
 The strategy will be:
 
 .. code::
+
   gmsh -2 bjt.geo 
   python bjt_refine.py 
   gmsh -2 bjt.geo -bgm ./bjt_bgmesh.pos 
