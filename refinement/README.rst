@@ -3,9 +3,9 @@
 
 This work derives from the ``devsim_bjt_example`` project.
 
-Work on strategy for refining meshes from Gmsh.
+Work on strategy for refining meshes from Gmsh.  The starting point will be 2D and be extended to 3D later.
 
-The ``.geo`` file is used to create an initial mesh.  An initial 2d mesh is created.  A simulation is performed.  A ``.pos`` format file is created based on the refinement criteria.  The ``.geo`` and ``.pos`` files are used to create a new mesh and the process is repeated.
+The ``.geo`` file is used to create an initial mesh.  An initial 2D mesh is created.  A simulation is performed.  A ``.pos`` format file is created based on the refinement criteria.  The ``.geo`` and ``.pos`` files are used to create a new mesh and the process is repeated.
 
 The strategy will be:
 
