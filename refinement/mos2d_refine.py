@@ -14,6 +14,7 @@
 
 from devsim.python_packages.simple_physics import *
 from devsim.python_packages.ramp import *
+import refinement
 
 import gmsh_mos2d_create
 device = "mos2d"
@@ -74,8 +75,10 @@ for c in contacts:
 
 solve(type="dc", absolute_error=1.0e30, relative_error=1e-5, maximum_iterations=30)
 
-for r in silicon_regions:
-  node_model(device=device, region=r, name="logElectrons", equation="log(Electrons)/log(10)")
+#for r in silicon_regions:
+#  node_model(device=device, region=r, name="logElectrons", equation="log(Electrons)/log(10)")
+
+write_devices(file="mos_refine.tec", type="tecplot")
 
 ##write_devices -file gmsh_mos2d_dd.flps -type floops
 ##write_devices -file gmsh_mos2d_dd -type vtk
@@ -85,11 +88,17 @@ for r in silicon_regions:
 
 for r in silicon_regions:
   element_from_edge_model(edge_model="ElectricField",   device=device, region=r)
-  element_from_edge_model(edge_model="ElectronCurrent", device=device, region=r)
-  element_from_edge_model(edge_model="HoleCurrent",     device=device, region=r)
-#
+#  element_from_edge_model(edge_model="ElectronCurrent", device=device, region=r)
+#  element_from_edge_model(edge_model="HoleCurrent",     device=device, region=r)
+##
 rampbias(device, "gate",  0.5, 0.5, 0.001, 100, 1e-10, 1e30, printAllCurrents)
-rampbias(device, "drain", 0.5, 0.1, 0.001, 100, 1e-10, 1e30, printAllCurrents)
-#
-write_devices(file="gmsh_mos2d_dd.dat", type="tecplot")
+#rampbias(device, "drain", 0.5, 0.1, 0.001, 100, 1e-10, 1e30, printAllCurrents)
+##
+#write_devices(file="gmsh_mos2d_dd.dat", type="tecplot")
+
+
+refinement.run(device, 'bulk', outfile="mos2d_bgmesh.pos",
+               mincl=1e-8, maxcl=1e-4, pdiff=0.025)
+
+write_devices(file="test.dat", type="tecplot")
 

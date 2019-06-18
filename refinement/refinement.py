@@ -16,24 +16,25 @@ from devsim import *
 
 
 def emag_refinement(device, region):
-    element_from_edge_model(edge_model="EField", device=device, region=region)
+    element_from_edge_model(edge_model="ElectricField", device=device, region=region)
     element_model(device=device, region=region, name="Emag",
-                  equation="(EField_x^2 + EField_y^2)^(0.5)")
+                  equation="(ElectricField_x^2 + ElectricField_y^2)^(0.5)")
     element_model(device=device, region=region, name="Enorm", equation='''
+    ifelse(Emag > 1.0e6, 1.0,
     ifelse(Emag > 1.0e5, 1.0,
-      ifelse(Emag > 1.0e4, 2.0,
-        ifelse(Emag > 1.0e3, 4.0,
-          ifelse(Emag > 1.0e2, 8.0,
-            if(Emag > 1.0e1, 16)))))
+      ifelse(Emag > 1.0e4, 100.0,
+        ifelse(Emag > 1.0e3, 1000.0,
+          ifelse(Emag > 1.0e2, 10000.0,
+            if(Emag > 1.0e1, 100000.0))))))
   ''')
     return "Enorm"
 
 
 def contact_refinement(device, region):
-    element_from_node_model(node_model="SurfaceArea",
+    element_from_node_model(node_model="ContactSurfaceArea",
                             device=device, region=region)
     element_model(device=device, region=region, name="SA",
-                  equation="if((SurfaceArea@en0 + SurfaceArea@en1 + SurfaceArea@en2) > 0.0, 4.0)")
+                  equation="if((ContactSurfaceArea@en0 + ContactSurfaceArea@en1 + ContactSurfaceArea@en2) > 0.0, 10.0)")
     return "SA"
 
 
@@ -62,6 +63,10 @@ def doping_refinement(device, region, pdiff):
 
 
 def run(device, region, outfile, mincl, maxcl, pdiff):
+    '''
+        mincl: minimum characteristic length
+        maxcl: maximum characteristic length
+    '''
 
     x = get_node_model_values(device=device, region=region, name="x")
     y = get_node_model_values(device=device, region=region, name="y")
@@ -87,13 +92,13 @@ def run(device, region, outfile, mincl, maxcl, pdiff):
 
     emag_refinement(device, region)
     contact_refinement(device, region)
-    #potential_refinement(device, region, pdiff)
+    potential_refinement(device, region, pdiff)
     #doping_refinement(device, region, ldiff)
 
     #element_model(device=device, region=region, name="clen", equation="max(lognetdoping_norm, SA)")
     #element_model(device=device, region=region, name="clen", equation="max(potential_norm, SA)")
     element_model(device=device, region=region,
-                  name="clen", equation="max(Enorm, SA)")
+                  name="clen", equation="max(max(Enorm, SA), potential_norm)")
     cl = get_element_model_values(device=device, region=region, name='clen')
 
     node_cl = [0.0]*len(x)
@@ -146,3 +151,4 @@ def run(device, region, outfile, mincl, maxcl, pdiff):
     print('};', file=fh)
     fh.close()
     print("BOX: %g %g %g %g" % (minx, miny, maxx, maxy))
+
