@@ -14,53 +14,6 @@
 
 from devsim import *
 
-
-#def emag_refinement(device, region):
-#    element_from_edge_model(edge_model="ElectricField", device=device, region=region)
-#    element_model(device=device, region=region, name="Emag",
-#                  equation="(ElectricField_x^2 + ElectricField_y^2)^(0.5)")
-#    element_model(device=device, region=region, name="Enorm", equation='''
-#    ifelse(Emag > 1.0e6, 1.0,
-#    ifelse(Emag > 1.0e5, 1.0,
-#      ifelse(Emag > 1.0e4, 100.0,
-#        ifelse(Emag > 1.0e3, 1000.0,
-#          ifelse(Emag > 1.0e2, 10000.0,
-#            if(Emag > 1.0e1, 100000.0))))))
-#  ''')
-#    return "Enorm"
-#
-#
-#def contact_refinement(device, region):
-#    element_from_node_model(node_model="ContactSurfaceArea",
-#                            device=device, region=region)
-#    element_model(device=device, region=region, name="SA",
-#                  equation="if((ContactSurfaceArea@en0 + ContactSurfaceArea@en1 + ContactSurfaceArea@en2) > 0.0, 10.0)")
-#    return "SA"
-#
-#
-#def potential_refinement(device, region, pdiff):
-#    # we are looking at individual edges on the triangle to be more anisotropic
-#    element_from_node_model(node_model="Potential",
-#                            device=device, region=region)
-#    element_model(device=device, region=region, name="potential_norm", equation='''
-#      (abs(Potential@en0-Potential@en1) > %s) ||
-#      (abs(Potential@en0-Potential@en2) > %s) ||
-#      (abs(Potential@en1-Potential@en2) > %s)
-#  ''' % (pdiff, pdiff, pdiff))
-#    return "potential_norm"
-#
-#
-#def doping_refinement(device, region, pdiff):
-#    # we are looking at individual edges on the triangle to be more anisotropic
-#    element_from_node_model(node_model="LogNetDoping",
-#                            device=device, region=region)
-#    element_model(device=device, region=region, name="lognetdoping_norm", equation='''
-#      (abs(LogNetDoping@en0-LogNetDoping@en1) > %s) ||
-#      (abs(LogNetDoping@en0-LogNetDoping@en2) > %s) ||
-#      (abs(LogNetDoping@en1-LogNetDoping@en2) > %s)
-#  ''' % (pdiff, pdiff, pdiff))
-#    return "lognetdoping_norm"
-
 def log_string(variable, minimum_value):
     '''
         equation for log10 of variable
@@ -109,6 +62,8 @@ def run(device, region, outfile, mincl, maxcl, pdiff):
     # bisect if more than 4 order of magnitude difference
     create_models( device=device, region=region, name="SLNetDoping", variable="NetDoping", minimum_value=1, bisection=4, function=signed_log_string) 
 
+    # potential difference
+    # difference from interface
 
 #    x = get_node_model_values(device=device, region=region, name="x")
 #    y = get_node_model_values(device=device, region=region, name="y")
@@ -194,3 +149,4 @@ def run(device, region, outfile, mincl, maxcl, pdiff):
 #    fh.close()
 #    print("BOX: %g %g %g %g" % (minx, miny, maxx, maxy))
 #
+
