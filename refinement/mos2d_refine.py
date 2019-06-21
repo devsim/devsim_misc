@@ -14,7 +14,7 @@
 
 from devsim.python_packages.simple_physics import *
 from devsim.python_packages.ramp import *
-import refinement
+import refinement2
 
 import gmsh_mos2d_create
 device = "mos2d"
@@ -91,13 +91,13 @@ for r in silicon_regions:
 #  element_from_edge_model(edge_model="ElectronCurrent", device=device, region=r)
 #  element_from_edge_model(edge_model="HoleCurrent",     device=device, region=r)
 ##
-rampbias(device, "gate",  0.5, 0.5, 0.001, 100, 1e-10, 1e30, printAllCurrents)
+#rampbias(device, "gate",  0.5, 0.5, 0.001, 100, 1e-10, 1e30, printAllCurrents)
 #rampbias(device, "drain", 0.5, 0.1, 0.001, 100, 1e-10, 1e30, printAllCurrents)
 ##
 #write_devices(file="gmsh_mos2d_dd.dat", type="tecplot")
 
 
-refinement.run(device, 'bulk', outfile="mos2d_bgmesh.pos",
+refinement2.run(device, 'bulk', outfile="mos2d_bgmesh.pos",
                mincl=1e-8, maxcl=1e-4, pdiff=0.025)
 
 write_devices(file="test.dat", type="tecplot")
