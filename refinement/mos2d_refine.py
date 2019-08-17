@@ -15,6 +15,11 @@
 from devsim.python_packages.simple_physics import *
 from devsim.python_packages.ramp import *
 import refinement2
+import devsim
+
+devsim.set_parameter(name = "extended_solver", value=True)
+devsim.set_parameter(name = "extended_model", value=True)
+devsim.set_parameter(name = "extended_equation", value=True)
 
 import gmsh_mos2d_create
 device = "mos2d"
@@ -24,81 +29,55 @@ regions = ("gate", "bulk", "oxide")
 interfaces = ("bulk_oxide", "gate_oxide")
 
 for i in regions:
-  CreateSolution(device, i, "Potential")
+    CreateSolution(device, i, "Potential")
 
 for i in silicon_regions:
-  SetSiliconParameters(device, i, 300)
-  CreateSiliconPotentialOnly(device, i)
+    SetSiliconParameters(device, i, 300)
+    CreateSiliconPotentialOnly(device, i)
 
 for i in oxide_regions:
-  SetOxideParameters(device, i, 300)
-  CreateOxidePotentialOnly(device, i, "log_damp")
+    SetOxideParameters(device, i, 300)
+    CreateOxidePotentialOnly(device, i, "log_damp")
 
 ### Set up contacts
 contacts = get_contact_list(device=device)
 for i in contacts:
-  tmp = get_region_list(device=device, contact=i)
-  r = tmp[0]
-  print("%s %s" % (r, i))
-  CreateSiliconPotentialOnlyContact(device, r, i)
-  set_parameter(device=device, name=GetContactBiasName(i), value=0.0)
+    tmp = get_region_list(device=device, contact=i)
+    r = tmp[0]
+    print("%s %s" % (r, i))
+    CreateSiliconPotentialOnlyContact(device, r, i)
+    set_parameter(device=device, name=GetContactBiasName(i), value=0.0)
 
 for i in interfaces:
-  CreateSiliconOxideInterface(device, i)
+    CreateSiliconOxideInterface(device, i)
 
-#for d in get_device_list():
-#  for gn in get_parameter_list():
-#    print("{0} {1}").format(gn, get_parameter(device=d, name=gn))
-#  for gn in get_parameter_list(device=d):
-#    print("{0} {1} {2}").format(d, gn, get_parameter(device=d, name=gn))
-#  for r in get_region_list(device=d):
-#    for gn in get_parameter_list(device=d, region=r):
-#      print("{0} {1} {2} {3}").format(d, r, gn, get_parameter(device=d, region=r, name=gn))
-#write_devices(file="foo.msh", type="devsim")
 solve(type="dc", absolute_error=1.0e-13, relative_error=1e-12, maximum_iterations=30)
 solve(type="dc", absolute_error=1.0e-13, relative_error=1e-12, maximum_iterations=30)
-#
-##write_devices -file gmsh_mos2d_potentialonly.flps -type floops
-write_devices(file="gmsh_mos2d_potentialonly", type="vtk")
 
 for i in silicon_regions:
-  CreateSolution(device, i, "Electrons")
-  CreateSolution(device, i, "Holes")
-  set_node_values(device=device, region=i, name="Electrons", init_from="IntrinsicElectrons")
-  set_node_values(device=device, region=i, name="Holes",     init_from="IntrinsicHoles")
-  CreateSiliconDriftDiffusion(device, i, "mu_n", "mu_p")
+    CreateSolution(device, i, "Electrons")
+    CreateSolution(device, i, "Holes")
+    set_node_values(device=device, region=i, name="Electrons", init_from="IntrinsicElectrons")
+    set_node_values(device=device, region=i, name="Holes",     init_from="IntrinsicHoles")
+    CreateSiliconDriftDiffusion(device, i, "mu_n", "mu_p")
 
 for c in contacts:
-  tmp = get_region_list(device=device, contact=c)
-  r = tmp[0]
-  CreateSiliconDriftDiffusionAtContact(device, r, c)
+    tmp = get_region_list(device=device, contact=c)
+    r = tmp[0]
+    CreateSiliconDriftDiffusionAtContact(device, r, c)
 
 solve(type="dc", absolute_error=1.0e30, relative_error=1e-5, maximum_iterations=30)
 
-#for r in silicon_regions:
-#  node_model(device=device, region=r, name="logElectrons", equation="log(Electrons)/log(10)")
+rampbias(device, "gate",  0.5, 0.5, 0.001, 100, 1e-10, 1e30, printAllCurrents)
+rampbias(device, "drain", 0.5, 0.25, 0.001, 100, 1e-10, 1e30, printAllCurrents)
 
-write_devices(file="mos_refine.tec", type="tecplot")
-
-##write_devices -file gmsh_mos2d_dd.flps -type floops
-##write_devices -file gmsh_mos2d_dd -type vtk
-##write_devices -file gmsh_mos2d_dd.msh -type devsim_data
-#
-
-
-for r in silicon_regions:
-  element_from_edge_model(edge_model="ElectricField",   device=device, region=r)
-#  element_from_edge_model(edge_model="ElectronCurrent", device=device, region=r)
-#  element_from_edge_model(edge_model="HoleCurrent",     device=device, region=r)
-##
-#rampbias(device, "gate",  0.5, 0.5, 0.001, 100, 1e-10, 1e30, printAllCurrents)
-#rampbias(device, "drain", 0.5, 0.1, 0.001, 100, 1e-10, 1e30, printAllCurrents)
-##
-#write_devices(file="gmsh_mos2d_dd.dat", type="tecplot")
-
-
-refinement2.run(device, 'bulk', outfile="mos2d_bgmesh.pos",
-               mincl=1e-8, maxcl=1e-4, pdiff=0.025)
+with open('bgmesh.pos', 'w') as ofh:
+    refinement2.print_header(ofh)
+    for r in silicon_regions:
+        refinement2.refine_silicon_region(fh=ofh, device=device, region=r)
+    for r in oxide_regions:
+        refinement2.refine_oxide_region(fh=ofh, device=device, region=r)
+    refinement2.print_footer(ofh)
 
 write_devices(file="test.dat", type="tecplot")
 

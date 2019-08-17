@@ -56,9 +56,6 @@ for i in interfaces:
 #write_devices(file="foo.msh", type="devsim")
 solve(type="dc", absolute_error=1.0e-13, relative_error=1e-12, maximum_iterations=30)
 solve(type="dc", absolute_error=1.0e-13, relative_error=1e-12, maximum_iterations=30)
-#
-##write_devices -file gmsh_mos2d_potentialonly.flps -type floops
-write_devices(file="gmsh_mos2d_potentialonly", type="vtk")
 
 for i in silicon_regions:
   CreateSolution(device, i, "Electrons")
@@ -77,19 +74,13 @@ solve(type="dc", absolute_error=1.0e30, relative_error=1e-5, maximum_iterations=
 for r in silicon_regions:
   node_model(device=device, region=r, name="logElectrons", equation="log(Electrons)/log(10)")
 
-##write_devices -file gmsh_mos2d_dd.flps -type floops
-##write_devices -file gmsh_mos2d_dd -type vtk
-##write_devices -file gmsh_mos2d_dd.msh -type devsim_data
-#
-
-
 for r in silicon_regions:
   element_from_edge_model(edge_model="ElectricField",   device=device, region=r)
   element_from_edge_model(edge_model="ElectronCurrent", device=device, region=r)
   element_from_edge_model(edge_model="HoleCurrent",     device=device, region=r)
-#
+
 rampbias(device, "gate",  0.5, 0.5, 0.001, 100, 1e-10, 1e30, printAllCurrents)
 rampbias(device, "drain", 0.5, 0.1, 0.001, 100, 1e-10, 1e30, printAllCurrents)
-#
+
 write_devices(file="gmsh_mos2d_dd.dat", type="tecplot")
 
