@@ -74,9 +74,9 @@ rampbias(device, "drain", 0.5, 0.25, 0.001, 100, 1e-10, 1e30, printAllCurrents)
 with open('bgmesh.pos', 'w') as ofh:
     refinement2.print_header(ofh)
     for r in silicon_regions:
-        refinement2.refine_silicon_region(fh=ofh, device=device, region=r)
+        refinement2.refine_silicon_region(fh=ofh, device=device, region=r, mincl=1e-8, maxcl=1e8)
     for r in oxide_regions:
-        refinement2.refine_oxide_region(fh=ofh, device=device, region=r)
+        refinement2.refine_oxide_region(fh=ofh, device=device, region=r, mincl=1e-8, maxcl=1e8)
     refinement2.print_footer(ofh)
 
 write_devices(file="test.dat", type="tecplot")

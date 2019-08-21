@@ -148,7 +148,7 @@ Background Field = 7;
 // Don't extend the elements sizes from the boundary inside the domain
 Mesh.CharacteristicLengthExtendFromBoundary = 0;
 Mesh.Algorithm=5; /*Delaunay*/
-Mesh.RandomFactor=1e-5; /*perturbation*/
+//Mesh.RandomFactor=1e-5; /*perturbation*/
 Mesh.CharacteristicLengthFromPoints = 0;
 Mesh.CharacteristicLengthFromCurvature = 0;
 Mesh.CharacteristicLengthExtendFromBoundary = 0;

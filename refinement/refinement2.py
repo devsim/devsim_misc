@@ -16,49 +16,23 @@ from devsim import *
 import sys
 import math
 
-#def log_string(variable, minimum_value):
-#    '''
-#        equation for log10 of variable
-#    '''
-#    return "log(abs(%s) + %s)/log(10)" % (variable, str(minimum_value))
-#
-#def signed_log_string(variable, minimum_value):
-#    '''
-#        signed log10 of variable
-#    '''
-#    return "sign(%s) * %s" % (variable, log_string(variable, minimum_value))
-#
-#def scalar(variable, minimum_value):
-#    '''
-#        original variable value
-#    '''
-#    # consider incorporating signed value
-#    return variable
-#
-#def diff_equation(name, bisection):
-#    '''
-#        model string to return 1 if criteria is met
-#    '''
-#    return "abs(%s@n0-%s@n1) > %s" % (name, name, str(bisection))
-#
-#def create_models(device, region, name, variable, minimum_value, bisection, function):
-#    '''
-#        setup sequence of models
-#    '''
-#    node_model(device=device, region=region, name=name, equation=function(variable=variable, minimum_value=minimum_value))
-#    edge_from_node_model(device=device, region=region, node_model=name)
-#    edge_model(device=device, region=region, name=name+"_edge", equation=diff_equation(name, bisection))
 
 def print_header(fh):
+    '''
+        Write header for backround mesh view
+    '''
     fh.write('View "background mesh" {\n')
 
 def print_footer(fh):
+    '''
+        Write footer for backround mesh view
+    '''
     fh.write('};\n')
 
 def get_edge_index(device, region):
     '''
-maps element edges to regular edges
-'''
+    maps element edges to regular edges
+    '''
     # now iterate over the edges of the element
     element_model(device=device, region=region,
                   name="eindex", equation="edge_index")
@@ -69,8 +43,8 @@ maps element edges to regular edges
 
 def get_node_index(device, region):
     '''
-maps head and tail nodes of from their edge index
-'''
+    maps head and tail nodes of from their edge index
+    '''
     # identify all edges that need to be bisected
     # ultimately translated to an element
     edge_from_node_model(node_model="node_index", device=device, region=region)
@@ -85,70 +59,35 @@ maps head and tail nodes of from their edge index
 def calculate_clengths(device, region, model_values):
     '''
     calculate the characteristic lengths for each edge by bisecting the edge length
-'''
-    edge_lengths = get_edge_model_values(device=device, region=region, name="EdgeLength")
+    '''
+    clengths = list(get_edge_model_values(device=device, region=region, name="EdgeLength"))
     bisection_count = 0
-    clengths = [None] * len(edge_lengths)
     for i, v in enumerate(model_values):
-      if v != 0:
-        clengths[i] = 0.5 * edge_lengths[i]
-        bisection_count += 1
-      else:
-        clengths[i] = edge_lengths[i]
-    print("Bisections: %d" % bisection_count)
+        if v != 0:
+            clengths[i] *= 0.5
+            bisection_count += 1
+    print("Edge Bisections: %d" % bisection_count)
     return clengths
 
 
-def get_output_elements(nindex, eindex, clengths):
+def get_output_elements3(nindex, eindex, clengths, number_nodes, mincl, maxcl):
     '''
     gets the node indexes and the characterisic lengths for each element
-'''
-    # break into a per element basis
-    outputelements = []
-    for i in range(0, len(eindex), 3):
-      ndict = {}
-      for j in eindex[i:i+3]:
-        v = clengths[j]
-        for k in nindex[j]:
-          if k in ndict:
-            ndict[k] = min(ndict[k], v)
-          else:
-            ndict[k] = v
-      outputelements.append(ndict)
-      #print(ndict)
-    return outputelements
-
-def get_output_elements2(nindex, eindex, clengths):
+    nindex : from get_node_index
+    eindex : from get_edge_index
+    clengths : from calculate_clengths
+    number_nodes : number of nodes
+    mincl : minimum characteristic length
+    maxcl : maximum characteristic length
     '''
-    gets the node indexes and the characterisic lengths for each element
-'''
-    # break into a per element basis
-    outputelements = []
-    for i in range(0, len(eindex), 3):
-      ndict = {}
-      mv = clengths[eindex[i]]
-      for j in eindex[i+1:i+3]:
-        mv = min(mv, clengths[j])
-      for j in eindex[i:i+3]:
-        for k in nindex[j]:
-          ndict[k] = mv
-      outputelements.append(ndict)
-      #print(ndict)
-    return outputelements
-
-def get_output_elements3(nindex, eindex, clengths):
-    '''
-    gets the node indexes and the characterisic lengths for each element
-'''
-    node_map = {}
+    # set upper limit to maxcl
+    node_map = [maxcl] * number_nodes
     # get node indexes for each edge
     for i, n in enumerate(nindex):
-        v = max(clengths[i], 1e-8)
+        # clip minimum value to mincl
+        v = max(clengths[i], mincl)
         for ni in n:
-            if ni not in node_map:
-                node_map[ni] = v
-            else:
-                node_map[ni] = min(node_map[ni], v) 
+            node_map[ni] = min(node_map[ni], v) 
 
     #break into a per element basis
     outputelements = []
@@ -160,67 +99,96 @@ def get_output_elements3(nindex, eindex, clengths):
             for k in nindex[j]:
                 if k not in ndict:
                     ndict[k] = node_map[k]
-        outputelements.append(ndict)
+        outputelements.append(tuple(ndict.items()))
     return outputelements
 
 def print_elements(fh, device, region, elements):
+    '''
+    print background mesh triangles
+    '''
     x = get_node_model_values(device=device, region=region, name="x")
     y = get_node_model_values(device=device, region=region, name="y")
 
     for e in elements:
       coords = []
       values = []
-      for n, v in e.items():
+      for n, v in e:
         coords.extend((x[n], y[n], 0.0))
         values.append(v)
       coordstring = ", ".join([format(x, "1.15g") for x in coords])
       valuestring = ", ".join([format(x, "1.15g") for x in values])
       fh.write("ST(%s) {%s};\n" % (coordstring, valuestring))
 
-def refine_common(fh, device, region, model_values):
+def refine_common(fh, device, region, model_values, mincl, maxcl):
+    '''
+    prints out the refined elements
+    model_values : non-zero for edges to be bisected
+    mincl : minimum characteristic length
+    maxcl : maximum characteristic length
+    '''
     clengths = calculate_clengths(device=device, region=region, model_values=model_values)
   
     eindex = get_edge_index(device, region)
     nindex = get_node_index(device, region)
+    number_nodes = len(get_node_model_values(device=device, region=region, name="node_index"))
 
 
-    outputelements = get_output_elements3(nindex=nindex, eindex=eindex, clengths = clengths)
+    outputelements = get_output_elements3(nindex=nindex, eindex=eindex, clengths=clengths, number_nodes=number_nodes, mincl=mincl, maxcl=maxcl)
     print_elements(fh=fh, device=device, region=region, elements=outputelements)
 
-def refine_oxide_region(fh, device, region):
+def get_oxide_model_values(device, region):
     '''
+    returns a model for non-refinement
+    mincl : minimum characteristic length
+    maxcl : maximum characteristic length
+    '''
+    test_model = [0.0] * len(get_edge_model_values(device=device, region=region, name="EdgeLength"))
+    return test_model
+
+def refine_oxide_region(fh, device, region, mincl, maxcl):
+    '''
+    refinement for oxide regions
+    mincl : minimum characteristic length
+    maxcl : maximum characteristic length
     '''
     # apply no refinement
-    test_model = [0.0] * len(get_edge_model_values(device=device, region=region, name="EdgeLength"))
+    test_model = get_oxide_model_values(device=device, region=region)
+    refine_common(fh=fh, device=device, region=region, model_values=test_model, mincl=mincl, maxcl=maxcl)
 
-    refine_common(fh=fh, device=device, region=region, model_values=test_model)
-
-def refine_silicon_region(fh, device, region):
+def get_silicon_model_values(device, region):
     '''
+    returns a model for refinement of silicon regions
     '''
-
+    # edge to node mapping (node0, node1)
     node_index = get_node_index(device=device, region=region)
+
     potential = get_node_model_values(device=device, region=region, name="Potential")
-    test_model1 = [1 if abs(potential[x[0]]-potential[x[1]]) > 0.010 else 0 for x in node_index]
+    test_model1 = [1 if abs(potential[x[0]]-potential[x[1]]) > 0.05 else 0 for x in node_index]
 
     electrons = get_node_model_values(device=device, region=region, name="Electrons")
     test_model2 = [1 if abs(math.log10(electrons[x[0]])-math.log10(electrons[x[1]])) > 1 else 0 for x in node_index]
 
-    test_model = [max(x) for x in zip(test_model1, test_model2)]
-    #test_model = test_model1
+    test_model = max_merge_lists((test_model1, test_model2))
 
-    #node_model(device=device, region=region, name="logElectrons", equation="log(Electrons)/log(10)")
-    #edge_from_node_model(device=device, region=region, node_model='logElectrons')
-    #edge_model(device=device, region=region, name="edgeLogElectrons", equation="abs(logElectrons@n0-logElectrons@n1)")
-    ## test if the difference more than 1 order of magnitude
-    #test_model1 = [1 if x > 2 else 0 for x in get_edge_model_values(device=device, region=region, name="edgeLogElectrons")]
+    return test_model
 
-    # test if the electric field in silicon is greater than 1e5
-    #test_model2 = [1 if abs(x) > 1e4 else 0 for x in get_edge_model_values(device=device, region=region, name="ElectricField")]
-    #test_model = [max(x) for x in zip(test_model1, test_model2)]
-    #test_model = test_model1
+def max_merge_lists(list_of_lists):
+    '''
+    gets the max of list of lists
+    '''
+    test_model = [max(x) for x in zip(*list_of_lists)]
+    return test_model
 
-    refine_common(fh=fh, device=device, region=region, model_values=test_model)
+def refine_silicon_region(fh, device, region, mincl, maxcl):
+    '''
+    refinement for silicon regions
+    mincl : minimum characteristic length
+    maxcl : maximum characteristic length
+    '''
+
+    test_model = get_silicon_model_values(device=device, region=region)
+
+    refine_common(fh=fh, device=device, region=region, model_values=test_model, mincl=mincl, maxcl=maxcl)
 
 
 
