@@ -4,6 +4,7 @@ set -euxo pipefail
 (time python mos2d_refine.py 2>&1) 2>&1 | tee mos2d_refine_0.out
 cp gmsh_mos2d.msh gmsh_mos2d_0.msh
 cp bgmesh.pos bgmesh_0.pos
+cp test.dat test_0.dat
 
 for i in 1 2 3; do 
 (time gmsh -2 -format 'msh2' -o gmsh_mos2d_${i}.msh -bgm ./bgmesh.pos gmsh_mos2d.geo 2>&1) 2>&1 | tee gmsh_mos2d_${i}.out

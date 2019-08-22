@@ -70,9 +70,10 @@ def calculate_clengths(device, region, model_values):
     return clengths
 
 
-def get_output_elements3(nindex, eindex, clengths, number_nodes, mincl, maxcl):
+def get_output_elements3(device, nindex, eindex, clengths, number_nodes, mincl, maxcl):
     '''
     gets the node indexes and the characterisic lengths for each element
+    device : device we are operating on
     nindex : from get_node_index
     eindex : from get_edge_index
     clengths : from calculate_clengths
@@ -89,12 +90,22 @@ def get_output_elements3(nindex, eindex, clengths, number_nodes, mincl, maxcl):
         for ni in n:
             node_map[ni] = min(node_map[ni], v) 
 
+    dim = get_dimension(device=device)
+    if dim == 2:
+        # 3 edges per triangle
+        skip = 3
+    elif dim == 3:
+        # 6 edges per tetrahedron
+        skip = 6
+    else:
+        raise RuntimeError("Unhandled dimension %d" % dim)
+
     #break into a per element basis
     outputelements = []
-    for i in range(0, len(eindex), 3):
+    for i in range(0, len(eindex), skip):
         ndict = {}
         # mapping of element edge into an edge index
-        for j in eindex[i:i+3]:
+        for j in eindex[i:i+skip]:
             # mapping of edge index into a node index
             for k in nindex[j]:
                 if k not in ndict:
@@ -108,16 +119,25 @@ def print_elements(fh, device, region, elements):
     '''
     x = get_node_model_values(device=device, region=region, name="x")
     y = get_node_model_values(device=device, region=region, name="y")
+    z = get_node_model_values(device=device, region=region, name="z")
+
+    dim = get_dimension(device=device)
+    if dim == 2:
+        shape = "ST"
+    elif dim == 3:
+        shape = "SS"
+    else:
+        raise RuntimeError("Unhandled dimension %d" % dim)
 
     for e in elements:
       coords = []
       values = []
       for n, v in e:
-        coords.extend((x[n], y[n], 0.0))
+        coords.extend((x[n], y[n], z[n]))
         values.append(v)
       coordstring = ", ".join([format(x, "1.15g") for x in coords])
       valuestring = ", ".join([format(x, "1.15g") for x in values])
-      fh.write("ST(%s) {%s};\n" % (coordstring, valuestring))
+      fh.write("%s(%s) {%s};\n" % (shape, coordstring, valuestring))
 
 def refine_common(fh, device, region, model_values, mincl, maxcl):
     '''
@@ -133,7 +153,7 @@ def refine_common(fh, device, region, model_values, mincl, maxcl):
     number_nodes = len(get_node_model_values(device=device, region=region, name="node_index"))
 
 
-    outputelements = get_output_elements3(nindex=nindex, eindex=eindex, clengths=clengths, number_nodes=number_nodes, mincl=mincl, maxcl=maxcl)
+    outputelements = get_output_elements3(device=device, nindex=nindex, eindex=eindex, clengths=clengths, number_nodes=number_nodes, mincl=mincl, maxcl=maxcl)
     print_elements(fh=fh, device=device, region=region, elements=outputelements)
 
 def get_oxide_model_values(device, region):
