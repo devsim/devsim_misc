@@ -1,0 +1,288 @@
+# yamllint disable rule:colons rule:line-length rule:empty-lines
+#https://yamllint.readthedocs.io/en/stable/disable_with_comments.html
+#yamllint -d relaxed foo.yml
+# The python module will be aware of how to create
+# the appropriate derivative names
+---
+# material parameters
+epsilon_0:
+  comment: "permittivity of free space"
+  value: 8.854187817e-14
+  unit:  "F*cm^-2"
+eps_r:
+  comment: "relative permittivity"
+  unit: "1"
+  materials:
+    - material: "silicon"
+      value: 11.7
+    - material: "SiO2"
+      value: 3.9
+# parameters
+Tref:
+  comment: "Reference Temperature"
+  value:   300
+  unit:    K
+k:
+  comment:  "Boltzmann Constant"
+  value:    1.3806485279e-23
+  unit:     "J/K"
+q:
+  comment:  "Electron Charge"
+  value:    1.60217662e-19
+  unit:     "coul"
+EG:
+  comment: "Energy Gap"
+  material: "Silicon"
+  value:   1.12
+  unit:    "eV"
+---
+name: "permittivity"
+command: "edge_model"
+options:
+  name:     "permittivity"
+  equation: "eps_r*epsilon_0"
+---
+# the command name implies that the edge models will be created from a node model
+name: ["Potential@n0", "Potential@n1"]
+command: "edge_from_node_model"
+options:
+  node_model: "Potential"
+---
+name: "ElectricField"
+command: "edge_average_model"
+options:
+  edge_model:   "ElectricField"
+  node_model:   "Potential"
+  average_type: "negative_gradient"
+derivatives:
+# handles Potential@n0, Potential@n1
+  node_variables:
+    - "Potential"
+documentation: >-
+  .. math::
+
+    \texttt{ElectricField} &= - \nabla \texttt{Potential} \\
+---
+name: "DisplacementField"
+command: "edge_model"
+options:
+  equation:     "permittivity*ElectricField"
+derivatives:
+  variables:
+    - "Potential"
+documentation: >-
+  .. math::
+
+    \texttt{DisplacementField} &= \epsilon \texttt{ElectricField}
+---
+name:    "kT"
+command: "node_model"
+options:
+equation:     "k*T"
+---
+name: "inv_kT"
+command: "node_model"
+options:
+equation: "1/kT"
+---
+name: "inv_2kT"
+command: "node_model"
+options:
+equation: "0.5*inv_kT"
+---
+name: "Ec"
+command: "node_model"
+options:
+  equation: "q*Xaffinity + Potential*invKT"
+---
+name: "Ec_qc"
+command: "node_model"
+options:
+  equation: "Ec - Λc"
+---
+name: "Ev"
+command: "node_model"
+options:
+  equation: "Ec - EG"
+---
+name: "Ev_qc"
+command: "node_model"
+options:
+  equation: "Ev + Λv"
+---
+name: "EG_qc"
+command: "node_model"
+options:
+  equation: "EG - Λc - Λv"
+---
+name: "n_i"
+command: "node_model"
+options:
+  equation: "sqrt(Nc*Nv)*exp(-EG_qc*inv2KT)"
+---
+name: "η_c"
+command: "node_model"
+options:
+  equation: "(EFn - Ec_qc)*invKT"
+---
+name: "η_v"
+command: "node_model"
+options:
+  equation: "(Ev_qc - EFp)*invKT"
+---
+name: "T32"
+command: "node_model"
+options:
+  equation: "pow(T, 1.5)"
+---
+name: "Tnorm"
+command: "node_model"
+options:
+  equation: "T/Tref"
+---
+name: "Tnorm_32"
+command: "node_model"
+options:
+  equation: "pow(Tnorm, 1.5)"
+---
+name: "Nc"
+command: "node_model"
+options:
+  equation: "NC300*Tnorm_32"
+---
+name: "Nv"
+command: "node_model"
+options:
+  equation: "NV300*Tnorm_32"
+---
+name: "Electrons_Boltzmann"
+command: "node_model"
+options:
+  equation: "NC*exp(η_C)"
+---
+name: "Holes_Boltzmann"
+command: "node_model"
+options:
+  equation: "NV*exp(η_V)"
+---
+  # assume Boltzmann
+name: "η_C_intrinsic"
+command: "node_model"
+options:
+  equation: "log(IntrinsicElectrons/NC)"
+---
+# assume Fermi
+name: "η_C_intrinsic"
+command: "node_model"
+options:
+  equation: "invFermi(IntrinsicElectrons/NC)"
+---
+# remaining
+name: "EFn_intrinsic"
+command: "node_model"
+options:
+  equation: "KT * η_C_intrinsic + Ec_qc"
+---
+name: "EFp_intrinsic"
+command: "node_model"
+options:
+  equation: "EFn_intrinsic"
+---
+name: "Electrons_Fermi"
+command: "node_model"
+options:
+  equation: "NC*Fermi(η_C)"
+---
+name: "Holes_Fermi"
+command: "node_model"
+options:
+  equation: "NV*Fermi(η_V)"
+---
+### Current
+### need to break down other driving force options
+#### TODO: edge average model
+name: "vdiff"
+command: "edge_model"
+options:
+  equation: "(Potential@n0 - Potential@n1)/V_t"
+---
+name: "Bern01"
+command: "edge_model"
+options:
+  equation: "B(vdiff)"
+---
+name: "Bern10"
+command: "edge_model"
+options:
+  equation: "Bern01 + vdiff"
+---
+name: "Jn"
+command: "edge_model"
+options:
+  equation: "ElectronCharge*mu_n*EdgeInverseLength*V_t*(Electrons@n1*Bern10  - Electrons@n0*Bern01)"
+---
+name: "Jp"
+command: "edge_model"
+options:
+  equation: "ElectronCharge*mu_p*EdgeInverseLength*V_t*(Holes@n0*Bern10 - Holes@n1*Bern01)"
+---
+#### Potential
+#### n_i depends on Potential, but gets cancelled out when determining EG
+#### look into tanh function
+name: "IntrinsicElectrons"
+command: "node_model"
+options:
+  equation: "n_i*exp(Potential/V_t)"
+---
+name: "IntrinsicHoles"
+command: "node_model"
+options:
+  equation: "n_i^2/IntrinsicElectrons"
+---
+name: "#IntrinsicHoles"
+command: "node_model"
+options:
+  equation: "n_i^2/IntrinsicElectrons"
+#---
+#name: "IntrinsicCharge"
+#command: "node_model"
+#options:
+#  equation: "-ElectronCharge * kahan3(IntrinsicHoles, -IntrinsicElectrons, NetDoping)"
+---
+## TODO: work out signs
+name: "IntrinsicCharge"
+command: "node_model"
+options:
+  equation: "ElectronCharge*(2*n_i*cosh(Potential/V_t) + NetDoping)"
+---
+## TODO: Electrostatic E Field for Poissons Equation, also use edge_average_model
+name: "ElectricField"
+command: "edge_average_model"
+options:
+  average_type: "negative_gradient"
+  node_model:   "Potential"
+---
+name: "PotentialEdgeFlux"
+command: "edge_model"
+options:
+  equation: "Permittivity * ElectricField"
+---
+
+#### Contacts
+
+
+#### Solution
+#### Potential Only
+
+##Solve for Potential
+#### Dependent equations:
+#### Calculate EFn, EFp from intrinsic electrons and holes
+# - name: "EFn"
+#   equation: "Ef"
+# - name: "EFp"
+#   equation: "Ef"
+
+## TODO mobility
+
+
+
