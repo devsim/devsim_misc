@@ -9,7 +9,7 @@ geom = pygmsh.opencascade.Geometry(
 
 h_top=40
 corner_radius=4
-half_device=True
+half_device=False
 lcar=1
 
 z_fin=0
@@ -97,15 +97,15 @@ all_volumes = [air_volume, poly_volume, oxide, fin, box_volume, drain_volume, so
 
 geom.boolean_fragments( all_volumes,[], delete_first=True, delete_other=False)
 #geom.add_physical_volume(air_volume, 'air')
-geom.add_physical_volume(poly_volume, 'poly')
-geom.add_physical_volume([oxide, air_volume], 'oxide')
-geom.add_physical_volume(fin, 'fin')
-geom.add_physical_volume(box_volume, 'box')
-geom.add_physical_volume(drain_volume, 'drain')
-geom.add_physical_volume(source_volume, 'source')
-geom.add_physical_volume(gate_volume, 'gate')
-geom.add_physical_volume(substrate_volume, 'substrate')
-geom.add_physical_volume(ground_volume, 'ground')
+geom.add_physical(poly_volume, 'poly')
+geom.add_physical([oxide, air_volume], 'oxide')
+geom.add_physical(fin, 'fin')
+geom.add_physical(box_volume, 'box')
+geom.add_physical(drain_volume, 'drain')
+geom.add_physical(source_volume, 'source')
+geom.add_physical(gate_volume, 'gate')
+geom.add_physical(substrate_volume, 'substrate')
+geom.add_physical(ground_volume, 'ground')
 
 with open('fin.geo', 'w') as ofh:
   ofh.write('''\
