@@ -1,0 +1,1 @@
+python fin.py && /Applications/Gmsh.app/Contents/MacOS/gmsh -3 fin.geo && python test_convert.py

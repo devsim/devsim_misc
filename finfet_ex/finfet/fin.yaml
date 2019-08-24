@@ -1,0 +1,30 @@
+
+
+name_priority:
+  - drain
+  - gate
+  - source
+  - ground
+  - box
+  - substrate
+  - fin
+  - poly
+  - oxide
+contact_regions:
+  - contact: drain
+    remove: True
+  - contact: gate
+    remove: True
+  - contact: source
+    remove: True
+  - contact: ground
+    remove: True
+regions:
+  - region: box
+  - region: substrate
+  - region: fin
+  - region: poly
+  - region: oxide
+interfaces:
+  - generate: True
+

@@ -1,0 +1,21 @@
+
+
+name_priority:
+  - gate
+  - sub
+  - ox
+  - si
+contact_regions:
+  - contact: gate
+    remove: True
+  - contact: sub
+    remove: True
+regions:
+  - region: ox
+  - region: si
+interfaces:
+  - interface: interface
+    regions: [ox, si]
+options:
+  scale: 1.0e-7
+
