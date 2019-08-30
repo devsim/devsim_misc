@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euxo pipefail
 INNAME=gmsh_mos2d.geo
-OUTMESH=gmsh_mos2d
-OUTBG=bgmesh
-REFINESCRIPT=mos2d_refine
-DBGMESH=test
+OUTMESH=gmsh_mos2d2
+OUTBG=bgmesh2
+REFINESCRIPT=mos2d_refine2
+DBGMESH=test2
 
 (time gmsh -2 -format 'msh2' ${INNAME} -o ${OUTMESH}.msh 2>&1) 2>&1 | tee ${OUTMESH}_0.out
 (time python ${REFINESCRIPT}.py 2>&1) 2>&1 | tee ${REFINESCRIPT}_0.out

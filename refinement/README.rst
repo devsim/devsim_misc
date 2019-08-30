@@ -16,4 +16,6 @@ Please see ``run.sh`` for a running example.  Both Gmsh and DEVSIM should be set
 
 This only collects data from the last bias point before the refinement2 module is called.  It would be interesting to adapt the script to sample the bisection criteria over several biases and merge them at the end to create the background mesh.
 
+``mos2d_refine.py`` is refinement based on the last bias
+``mos2d_refine2.py`` is refinement based on the all biases
 

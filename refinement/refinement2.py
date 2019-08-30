@@ -34,8 +34,9 @@ def get_edge_index(device, region):
     maps element edges to regular edges
     '''
     # now iterate over the edges of the element
-    element_model(device=device, region=region,
-                  name="eindex", equation="edge_index")
+    if "eindex" not in get_element_model_list(device=device, region=region):
+        element_model(device=device, region=region,
+                      name="eindex", equation="edge_index")
     eindex = get_element_model_values(
         device=device, region=region, name='eindex')
     eindex = [int(x) for x in eindex]
@@ -47,7 +48,8 @@ def get_node_index(device, region):
     '''
     # identify all edges that need to be bisected
     # ultimately translated to an element
-    edge_from_node_model(node_model="node_index", device=device, region=region)
+    if "node_index@n0" not in get_edge_model_list(device=device, region=region):
+        edge_from_node_model(node_model="node_index", device=device, region=region)
     nindex = list(
       zip(
         [int(x) for x in get_edge_model_values(device=device, region=region, name="node_index@n0")],
@@ -159,8 +161,6 @@ def refine_common(fh, device, region, model_values, mincl, maxcl):
 def get_oxide_model_values(device, region):
     '''
     returns a model for non-refinement
-    mincl : minimum characteristic length
-    maxcl : maximum characteristic length
     '''
     test_model = [0.0] * len(get_edge_model_values(device=device, region=region, name="EdgeLength"))
     return test_model
