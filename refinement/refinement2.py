@@ -132,14 +132,14 @@ def print_elements(fh, device, region, elements):
         raise RuntimeError("Unhandled dimension %d" % dim)
 
     for e in elements:
-      coords = []
-      values = []
-      for n, v in e:
-        coords.extend((x[n], y[n], z[n]))
-        values.append(v)
-      coordstring = ", ".join([format(x, "1.15g") for x in coords])
-      valuestring = ", ".join([format(x, "1.15g") for x in values])
-      fh.write("%s(%s) {%s};\n" % (shape, coordstring, valuestring))
+        coords = []
+        values = []
+        for n, v in e:
+            coords.extend((x[n], y[n], z[n]))
+            values.append(v)
+        coordstring = ", ".join([format(x, "1.15g") for x in coords])
+        valuestring = ", ".join([format(x, "1.15g") for x in values])
+        fh.write("%s(%s) {%s};\n" % (shape, coordstring, valuestring))
 
 def refine_common(fh, device, region, model_values, mincl, maxcl):
     '''
@@ -149,7 +149,7 @@ def refine_common(fh, device, region, model_values, mincl, maxcl):
     maxcl : maximum characteristic length
     '''
     clengths = calculate_clengths(device=device, region=region, model_values=model_values)
-  
+
     eindex = get_edge_index(device, region)
     nindex = get_node_index(device, region)
     number_nodes = len(get_node_model_values(device=device, region=region, name="node_index"))

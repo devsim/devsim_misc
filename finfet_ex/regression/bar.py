@@ -6,33 +6,33 @@ geom = pygmsh.opencascade.Geometry(
 )
 
 def create_vol_volume(geom, h, w, l, x, z, cr, lcar=100):
-  f = 0.5*w
-  y = [-f,-f+cr, +f-cr, +f]
-  z = [z, z + (h-cr), z + h]
-  f = 0.5 * cr
-  points = []
-  points.append(geom.add_point((x, y[0], z[0]), lcar=lcar))
-  points.append(geom.add_point((x, y[0], z[1]), lcar=lcar))
-  points.append(geom.add_point((x, y[1], z[1]), lcar=lcar))
-  points.append(geom.add_point((x, y[1], z[2]), lcar=lcar))
-  points.append(geom.add_point((x, y[2], z[2]), lcar=lcar))
-  points.append(geom.add_point((x, y[2], z[1]), lcar=lcar))
-  points.append(geom.add_point((x, y[3], z[1]), lcar=lcar))
-  points.append(geom.add_point((x, y[3], z[0]), lcar=lcar))
+    f = 0.5*w
+    y = [-f,-f+cr, +f-cr, +f]
+    z = [z, z + (h-cr), z + h]
+    f = 0.5 * cr
+    points = []
+    points.append(geom.add_point((x, y[0], z[0]), lcar=lcar))
+    points.append(geom.add_point((x, y[0], z[1]), lcar=lcar))
+    points.append(geom.add_point((x, y[1], z[1]), lcar=lcar))
+    points.append(geom.add_point((x, y[1], z[2]), lcar=lcar))
+    points.append(geom.add_point((x, y[2], z[2]), lcar=lcar))
+    points.append(geom.add_point((x, y[2], z[1]), lcar=lcar))
+    points.append(geom.add_point((x, y[3], z[1]), lcar=lcar))
+    points.append(geom.add_point((x, y[3], z[0]), lcar=lcar))
 
-  lines = []
-  lines.append(geom.add_line(points[0], points[1]))
-  lines.append(geom.add_circle_arc(points[1], points[2], points[3]))
-  
-  lines.append(geom.add_line(points[3], points[4]))
-  lines.append(geom.add_circle_arc(points[4], points[5], points[6]))
-  lines.append(geom.add_line(points[6], points[7]))
-  lines.append(geom.add_line(points[7], points[0]))
+    lines = []
+    lines.append(geom.add_line(points[0], points[1]))
+    lines.append(geom.add_circle_arc(points[1], points[2], points[3]))
 
-  line_loop=geom.add_line_loop(lines)
-  surface=geom.add_plane_surface(line_loop)
-  vol = geom.extrude(surface, translation_axis=[l, 0, 0])[1]
-  return vol
+    lines.append(geom.add_line(points[3], points[4]))
+    lines.append(geom.add_circle_arc(points[4], points[5], points[6]))
+    lines.append(geom.add_line(points[6], points[7]))
+    lines.append(geom.add_line(points[7], points[0]))
+
+    line_loop=geom.add_line_loop(lines)
+    surface=geom.add_plane_surface(line_loop)
+    vol = geom.extrude(surface, translation_axis=[l, 0, 0])[1]
+    return vol
 
 
 h_top=40

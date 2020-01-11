@@ -41,29 +41,29 @@ actual_volumes=[None]*len(elements)
 element_node_volumes = get_element_model_values(device=device, region=region, name="ElementNodeVolume")
 
 for tet_index, e in enumerate(elements):
-  v = [None]*3
-  for i in range(3):
-    v[i] = coordinate[e[i+1]] - coordinate[e[0]]
-  tet_vol = numpy.abs(numpy.dot(numpy.cross(v[0], v[1]), v[2].T))/6.0
-  vol += tet_vol
-  actual_vol = sum([abs(q) for q in element_node_volumes[6*tet_index:6*(tet_index+1)]])
-  actual_volumes[tet_index] = 2*actual_vol
-  tetrahedron_volumes[tet_index] = float(tet_vol[0])
+    v = [None]*3
+    for i in range(3):
+        v[i] = coordinate[e[i+1]] - coordinate[e[0]]
+    tet_vol = numpy.abs(numpy.dot(numpy.cross(v[0], v[1]), v[2].T))/6.0
+    vol += tet_vol
+    actual_vol = sum([abs(q) for q in element_node_volumes[6*tet_index:6*(tet_index+1)]])
+    actual_volumes[tet_index] = 2*actual_vol
+    tetrahedron_volumes[tet_index] = float(tet_vol[0])
 
 
 ratios = [actual_volumes[i] / tetrahedron_volumes[i] for i in range(len(actual_volumes))]
 #for i in range(len(actual_volumes)):
 for i in range(6):
-  print i, actual_volumes[i], tetrahedron_volumes[i], ratios[i]
+    print i, actual_volumes[i], tetrahedron_volumes[i], ratios[i]
 
 max_ratio = 0;
 mytet = None;
 for i, ratio in enumerate(ratios):
-  if ratio > max_ratio:
-    max_ratio = ratio
-    maxtet = i
-  if ratio > 1:
-    print i, ratio
+    if ratio > max_ratio:
+        max_ratio = ratio
+        maxtet = i
+    if ratio > 1:
+        print i, ratio
 
 mytet = maxtet
 mytet = 0
@@ -80,32 +80,32 @@ xs = []
 ys = []
 zs = []
 for i in range(4):
-  ni = elements[mytet][i]
-  xs.append(x[ni])
-  ys.append(y[ni])
-  zs.append(z[ni])
+    ni = elements[mytet][i]
+    xs.append(x[ni])
+    ys.append(y[ni])
+    zs.append(z[ni])
 
 mymat = numpy.zeros((3, 3))
 myrhs = numpy.zeros((3,1))
 n0 = elements[mytet][0]
 for i in range(3):
-  ni = elements[mytet][i+1]
-  #print coordinate[ni] - coordinate[n0]
-  #print mymat[i,:]
-  v = coordinate[ni] - coordinate[n0]
-  myrhs[i] = 0.5*numpy.dot(v, v.T)
-  mymat[i,:] = coordinate[ni] - coordinate[n0]
+    ni = elements[mytet][i+1]
+    #print coordinate[ni] - coordinate[n0]
+    #print mymat[i,:]
+    v = coordinate[ni] - coordinate[n0]
+    myrhs[i] = 0.5*numpy.dot(v, v.T)
+    mymat[i,:] = coordinate[ni] - coordinate[n0]
 
 print mymat
 print myrhs
 foo = numpy.linalg.solve(mymat, myrhs) + coordinate[n0].T
 
 for i in range(4):
-  ni = elements[mytet][i]
-  v = coordinate[ni] - foo.T
-  print numpy.linalg.norm(v)
-  radius = numpy.linalg.norm(v)
-  print
+    ni = elements[mytet][i]
+    v = coordinate[ni] - foo.T
+    print numpy.linalg.norm(v)
+    radius = numpy.linalg.norm(v)
+    print
 
 #exit()
 #print foo + coordinate[n0].T
@@ -123,18 +123,18 @@ from mpl_toolkits.mplot3d import Axes3D
 ax = plt.axes(projection='3d')
 ax.set_aspect('equal')
 for i in range(4):
-  for j in range(i+1, 4):
-    ax.plot(
-        (xs[i], xs[j]),
-      (ys[i], ys[j]),
-      (zs[i], zs[j]), 'b')
+    for j in range(i+1, 4):
+        ax.plot(
+            (xs[i], xs[j]),
+          (ys[i], ys[j]),
+          (zs[i], zs[j]), 'b')
 
 for i in range(4):
-  ax.plot(
-      (xs[i], foo[0]),
-        (ys[i], foo[1]),
-        (zs[i], foo[2]), 'k'
-  )
+    ax.plot(
+        (xs[i], foo[0]),
+          (ys[i], foo[1]),
+          (zs[i], foo[2]), 'k'
+    )
 mid_x = foo[0]
 mid_y = foo[1]
 mid_z = foo[2]

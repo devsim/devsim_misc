@@ -50,7 +50,7 @@ mydict = {
   "h" : h,
 }
 with open('moscap3d.geo', 'w') as ofh:
-  ofh.write('''\
+    ofh.write('''\
 // This option may be important for background mesh
 //Mesh.CharacteristicLengthExtendFromBoundary=0; /* do not extend from boundary points */
 //Mesh.Algorithm3D=1 /* 1 is Delaunay, Tetgen */
@@ -62,10 +62,10 @@ with open('moscap3d.geo', 'w') as ofh:
 //Geometry.ScalingFactor=1.0e-7;
 //Mesh.CharacteristicLengthMax = 2.5e-5; /*maximum characteristic length */
 ''')
-  ofh.write(geom.get_code())
-  ofh.write("\n")
+    ofh.write(geom.get_code())
+    ofh.write("\n")
 
-  ofh.write('''
+    ofh.write('''
 Field[1] = Box;
 Field[1].VIn = %(lrf)s;
 Field[1].VOut = %(lcar)s;

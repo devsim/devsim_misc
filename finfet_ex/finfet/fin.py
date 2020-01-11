@@ -108,7 +108,7 @@ geom.add_physical(substrate_volume, 'substrate')
 geom.add_physical(ground_volume, 'ground')
 
 with open('fin.geo', 'w') as ofh:
-  ofh.write('''\
+    ofh.write('''\
 // This option may be important for background mesh
 Mesh.CharacteristicLengthExtendFromBoundary=0; /* do not extend from boundary points */
 //Mesh.Algorithm3D=1 /* 1 is Delaunay, Tetgen */
@@ -117,7 +117,7 @@ Mesh.CharacteristicLengthExtendFromBoundary=0; /* do not extend from boundary po
 //Mesh.CharacteristicLengthFromCurvature = 1
 //Mesh.CharacteristicLengthFromPoints = 1
 ''')
-  ofh.write(geom.get_code())
-  ofh.write("\n")
+    ofh.write(geom.get_code())
+    ofh.write("\n")
 #  ofh.write("Coherence;\n")
 
