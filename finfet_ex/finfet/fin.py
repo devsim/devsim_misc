@@ -2,9 +2,9 @@
 import pygmsh
 from bool_common import *
 geom = pygmsh.opencascade.Geometry(
-  characteristic_length_min=.1,
+    characteristic_length_min=.1,
   characteristic_length_max=2.5e-5
-  )
+)
 
 
 h_top=40

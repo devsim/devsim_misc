@@ -212,7 +212,7 @@ def read_gmsh_info(gmshname):
     ifh.seek(0)
     triangles, tetrahedra = read_elements_from_gmsh(ifh)
   return {
-    'pnames' : pnames,
+      'pnames' : pnames,
     "coordinates" : coordinates,
     "triangles" : triangles,
     "tetrahedra" : tetrahedra,

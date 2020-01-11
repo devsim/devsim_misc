@@ -1,9 +1,9 @@
 
 import pygmsh
 geom = pygmsh.opencascade.Geometry(
-  characteristic_length_min=0.1,
+    characteristic_length_min=0.1,
   characteristic_length_max=0.1,
-  )
+)
 
 def create_vol_volume(geom, h, w, l, x, z, cr, lcar=100):
   f = 0.5*w

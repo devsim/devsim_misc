@@ -10,7 +10,7 @@ def find_interfaces(tetrahedra):
     the_set = set_dict[pnum]
     n = sorted(t[0:4])
     tuples_to_add = [
-      tuple([n[0], n[1], n[2]]),
+        tuple([n[0], n[1], n[2]]),
       tuple([n[0], n[1], n[3]]),
       tuple([n[0], n[2], n[3]]),
       tuple([n[1], n[2], n[3]]),
@@ -151,7 +151,7 @@ def get_interface_map(interfaces, pname_map, elem_ids, name_priority, interface_
       phys_id = get_next_phys_id(pname_map)
       pname_map[phys_id] = (2, new_name)
       interface_map[new_name] = {
-        'phys_id' : phys_id,
+          'phys_id' : phys_id,
         'elem_id' : {},
       }
     interface_map[new_name]['elem_id'][new_elem_id] = interface

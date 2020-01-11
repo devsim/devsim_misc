@@ -51,10 +51,10 @@ def get_node_index(device, region):
     if "node_index@n0" not in get_edge_model_list(device=device, region=region):
         edge_from_node_model(node_model="node_index", device=device, region=region)
     nindex = list(
-      zip(
-        [int(x) for x in get_edge_model_values(device=device, region=region, name="node_index@n0")],
-        [int(x) for x in get_edge_model_values(device=device, region=region, name="node_index@n1")],
-      )
+        zip(
+            [int(x) for x in get_edge_model_values(device=device, region=region, name="node_index@n0")],
+            [int(x) for x in get_edge_model_values(device=device, region=region, name="node_index@n1")],
+        )
     )
     return nindex
 

@@ -3,9 +3,9 @@ import pygmsh
 import bool_common
 
 geom = pygmsh.opencascade.Geometry(
-  #characteristic_length_min=.1,
+    #characteristic_length_min=.1,
   #characteristic_length_max=2.5e-5
-  )
+)
 
 w=1
 h=1
@@ -42,7 +42,7 @@ geom.add_physical_volume(si, 'si')
 # TODO: add refinement box
 # 
 mydict = {
-  "lrf" : lrf,
+    "lrf" : lrf,
   "lcar" : lcar,
   "trf" : trf,
   "xrf" : xrf,

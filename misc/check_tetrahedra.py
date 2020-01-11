@@ -125,16 +125,16 @@ ax.set_aspect('equal')
 for i in range(4):
   for j in range(i+1, 4):
     ax.plot(
-      (xs[i], xs[j]),
+        (xs[i], xs[j]),
       (ys[i], ys[j]),
       (zs[i], zs[j]), 'b')
 
 for i in range(4):
   ax.plot(
-        (xs[i], foo[0]),
+      (xs[i], foo[0]),
         (ys[i], foo[1]),
         (zs[i], foo[2]), 'k'
-    )
+  )
 mid_x = foo[0]
 mid_y = foo[1]
 mid_z = foo[2]
