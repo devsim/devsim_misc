@@ -6,6 +6,12 @@ import argparse
 
 
 def find_interfaces(tetrahedra):
+    '''
+    For a list of tetrahedra:
+
+    * break them up by physical number
+    * find intersections in each region
+    '''
     set_dict = {}
     for t in tetrahedra:
         # physical number, elementary id
@@ -43,6 +49,12 @@ def find_interfaces(tetrahedra):
 
 
 def delete_coordinates(coordinates, triangles, tetrahedra):
+    '''
+    Given a list of coordinates, triangles, tetrahedra:
+
+    * convert elements into vertices
+    * renumber coordinates with orphaned vertices removed
+    '''
     cmap = [None] * (len(coordinates) + 1)
     vertices = set([])
     for t in triangles:
@@ -79,16 +91,25 @@ def delete_coordinates(coordinates, triangles, tetrahedra):
 
 
 def get_next_elem_id(elem_ids):
+    '''
+    return a new unique elem id
+    '''
     nid = max(elem_ids) + 1
     return nid
 
 
 def get_next_phys_id(pname_map):
+    '''
+    return a new unique phys id
+    '''
     nid = max(pname_map.keys()) + 1
     return nid
 
 
 def delete_region_tetrahedra(pname_map, name, tetrahedra):
+    '''
+    filter out tetrahedron from deleted regions
+    '''
     for k, v in pname_map.items():
         if v[1] == name:
             dim = v[0]
@@ -100,6 +121,10 @@ def delete_region_tetrahedra(pname_map, name, tetrahedra):
 
 
 def get_name(name0, name1, name_priority, interface_names):
+    '''
+    return name of added interface
+    picks names based on yaml file or priority index
+    '''
     ret = None
     for i in interface_names:
         regions = i['regions']
@@ -136,6 +161,9 @@ def process_tetrahedra(tetrahedra):
 
 
 def get_pname_map(gmsh_pnames):
+    '''
+    processes physical names from mesh format
+    '''
     pname_map = {}
     for p in gmsh_pnames:
         data = p.split()
@@ -148,6 +176,9 @@ def get_pname_map(gmsh_pnames):
 
 
 def get_interface_map(interfaces, pname_map, elem_ids, name_priority, interface_names):
+    '''
+    names for new interfaces
+    '''
     interface_map = {}
     # each new interface gets a new elementary id
     for i in sorted(interfaces.keys()):
@@ -171,6 +202,9 @@ def get_interface_map(interfaces, pname_map, elem_ids, name_priority, interface_
 
 
 def get_surface_triangles(interface_map):
+    '''
+    gets all of the surface triangles based on vertices
+    '''
     triangles = []
     for i in sorted(interface_map.keys()):
         phys_id = interface_map[i]['phys_id']
@@ -202,6 +236,9 @@ def delete_regions(regions_to_delete, pname_map, coordinates, triangles, tetrahe
 
 
 def scale_coordinates(coordinates, scale):
+    '''
+    constant scale on all coordinate positions
+    '''
     new_coordinates = [None] * len(coordinates)
     for i, c in enumerate(coordinates):
         e = c.split()
