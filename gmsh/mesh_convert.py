@@ -1,14 +1,20 @@
 
 # read node, face, ele file and convert to gmsh
+'''
+Read and write from Gmsh and TetGen
+'''
 
 
 def read_nodes_from_tetgen(ifh):
+    '''
+    read node
+    '''
     ncoordinates = None
     coordinates = []
     for line in ifh:
         line = line.strip()
         if line and line[0] == "#":
-            continue
+            pass
         elif not ncoordinates:
             ncoordinates = int(line.split()[0])
         else:
@@ -19,6 +25,9 @@ def read_nodes_from_tetgen(ifh):
 
 
 def read_physical_names(ifh):
+    '''
+    read physical names from gmsh
+    '''
     nphysicalnames = None
     inphysicalnames = False
     physicalnames = []
@@ -40,6 +49,9 @@ def read_physical_names(ifh):
 
 
 def read_nodes_from_gmsh(ifh):
+    '''
+    read physical names from gmsh
+    '''
     ncoordinates = None
     coordinates = []
     innodes = False
@@ -65,7 +77,11 @@ def read_nodes_from_gmsh(ifh):
 
 
 def read_elements_from_gmsh(ifh):
+    '''
+    read elements from gmsh
+    '''
     nelements = None
+    edges = []
     triangles = []
     tetrahedra = []
     inelements = False
@@ -89,24 +105,30 @@ def read_elements_from_gmsh(ifh):
             outdata.append(data[3])
             # plus the elementary id
             outdata.append(data[4])
-            if data[1] == '2':
+            etype = int(data[1])
+            if etype == 1:
+                edges.append(outdata)
+            elif etype == 2:
                 triangles.append(outdata)
-            elif data[1] == '4':
+            elif etype == 4:
                 tetrahedra.append(outdata)
             else:
-                raise RuntimeError('Issue reading elements')
-    return (triangles, tetrahedra)
+                raise RuntimeError('Issue reading elements gmsh type %d' % etype)
+    return (edges, triangles, tetrahedra)
 
 # we only want the triangles on a marked boundary
 
 
 def read_triangles_from_tetgen(ifh):
+    '''
+    read triangles from tetgen
+    '''
     ntriangles = None
     triangles = []
     for line in ifh:
         line = line.strip()
         if line and line[0] == "#":
-            continue
+            pass
         elif not ntriangles:
             ntriangles = int(line.split()[0])
         else:
@@ -118,12 +140,15 @@ def read_triangles_from_tetgen(ifh):
 
 
 def read_tetrahedra_from_tetgen(ifh):
+    '''
+    read tetrahedra from tetgen
+    '''
     ntetrahedra = None
     tetrahedra = []
     for line in ifh:
         line = line.strip()
         if line and line[0] == "#":
-            continue
+            pass
         elif not ntetrahedra:
             ntetrahedra = int(line.split()[0])
         else:
@@ -135,6 +160,9 @@ def read_tetrahedra_from_tetgen(ifh):
 
 
 def write_format_to_gmsh(ofh):
+    '''
+    write gmsh file header
+    '''
     ofh.write('''\
 $MeshFormat
 2.2 0 8
@@ -143,16 +171,26 @@ $EndMeshFormat
 
 
 def write_nodes_to_gmsh(ofh, coordinates):
+    '''
+    write coordinates to gmsh
+    '''
     ofh.write('$Nodes\n%d\n' % len(coordinates))
     for coordinate in coordinates:
         ofh.write(coordinate + '\n')
     ofh.write('$EndNodes\n')
 
 
-def write_elements_to_gmsh(ofh, triangles, tetrahedra):
-    nelements = len(triangles) + len(tetrahedra)
+def write_elements_to_gmsh(ofh, edges, triangles, tetrahedra):
+    '''
+    write element list to gmsh
+    '''
+    nelements = len(edges) + len(triangles) + len(tetrahedra)
     ofh.write('$Elements\n%d\n' % nelements)
     index = 1
+    for edge in edges:
+        ofh.write('%d 1 2 %s %s ' %
+                  (index, str(edge[-2]), str(edge[-1])))
+        ofh.write(' '.join(str(x) for x in edge[0:2]))
     for triangle in triangles:
         ofh.write('%d 2 2 %s %s ' %
                   (index, str(triangle[-2]), str(triangle[-1])))
@@ -169,6 +207,9 @@ def write_elements_to_gmsh(ofh, triangles, tetrahedra):
 
 
 def write_physical_names_to_gmsh(ofh, physical_names):
+    '''
+    write physical names go gmsh file
+    '''
     ofh.write('$PhysicalNames\n%d\n' % len(physical_names))
     for pname in physical_names:
         ofh.write(pname + '\n')
@@ -176,6 +217,9 @@ def write_physical_names_to_gmsh(ofh, physical_names):
 
 
 def tetgen_to_gmsh(basename, gmshname, groupsname):
+    '''
+    convert from tetgen .node, .face, .ele files to gmsh format
+    '''
     with open(basename + '.node') as ifh:
         coordinates = read_nodes_from_tetgen(ifh)
     with open(basename + '.face') as ifh:
@@ -189,10 +233,14 @@ def tetgen_to_gmsh(basename, gmshname, groupsname):
         write_format_to_gmsh(ofh)
         write_physical_names_to_gmsh(ofh, physical_names)
         write_nodes_to_gmsh(ofh, coordinates)
-        write_elements_to_gmsh(ofh, triangles, tetrahedra)
+        edges = []
+        write_elements_to_gmsh(ofh, edges, triangles, tetrahedra)
 
 
 def gmsh_to_tetgen(gmshname, basename, groupsname):
+    '''
+    convert to gmsh to tetgen format
+    '''
     with open(gmshname) as ifh:
         pnames = read_physical_names(ifh)
         if groupsname:
@@ -205,7 +253,7 @@ def gmsh_to_tetgen(gmshname, basename, groupsname):
             for node in coordinates:
                 ofh.write(node + '\n')
         ifh.seek(0)
-        triangles, tetrahedra = read_elements_from_gmsh(ifh)
+        _, triangles, tetrahedra = read_elements_from_gmsh(ifh)
         with open(basename + '.face', 'w') as ofh:
             ofh.write('%d 1\n' % len(triangles))
             for triangle in triangles:
@@ -219,21 +267,23 @@ def gmsh_to_tetgen(gmshname, basename, groupsname):
 
 
 def read_gmsh_info(gmshname):
+    '''
+    read entire gmsh file
+    '''
     with open(gmshname) as ifh:
         pnames = read_physical_names(ifh)
         ifh.seek(0)
         coordinates = read_nodes_from_gmsh(ifh)
         ifh.seek(0)
-        triangles, tetrahedra = read_elements_from_gmsh(ifh)
+        edges, triangles, tetrahedra = read_elements_from_gmsh(ifh)
     return {
         'pnames': pnames,
         "coordinates": coordinates,
+        "edges": edges,
         "triangles": triangles,
         "tetrahedra": tetrahedra,
     }
 
-
-# TODO: need to add elementary id in tetgen to gmsh conversion
 
 # def gmsh_to_tetgen(gmshname, basename):
 
@@ -247,7 +297,8 @@ if __name__ == "__main__":
 
     import argparse
 
-    # TODO: really need to use Elementary ID instead of Physical ID in tetgen.  Since we can have regions which are not physically connected.
+    # Really need to use Elementary ID instead of Physical ID in tetgen.
+    # Since we can have regions which are not physically connected.
     # maybe this is not really an issue.
     parser = argparse.ArgumentParser(
         description='Convert between Gmsh and Tetgen format')
@@ -256,7 +307,8 @@ if __name__ == "__main__":
     parser.add_argument(
         '--tetgen',         help='the basename for tetgen input/output', default=True)
     parser.add_argument(
-        '--groups',         help='file to input/output the physical names in gmsh format', required=False)
+        '--groups',         help='file to input/output the physical names in gmsh format',
+        required=False)
     parser.add_argument('--gmsh_to_tetgen', help="convert gmsh to tetgen",
                         default=False, action='store_true')
     parser.add_argument('--tetgen_to_gmsh', help="convert tetgen to gmsh",
@@ -274,4 +326,4 @@ if __name__ == "__main__":
     elif args.gmsh_to_tetgen:
         gmsh_to_tetgen(args.gmsh, args.tetgen, args.groups)
     else:
-        raise ("no conversion selected")
+        raise RuntimeError("no conversion selected")
