@@ -310,11 +310,13 @@ def fix_surface_conflicts(dimension, surfaces, pname_map, name_priority):
             for lid, lvertexes in priority_vertexes.items():
                 if lvertexes.intersection(nset):
                     hpname = pname_map[lid][1]
-                    errors += "overlapping elements between priority_name %s and boundary of higher priority %s\n" % (n, hpname)
+                    #errors += "overlapping elements between priority_name %s and boundary of higher priority %s\n" % (n, hpname)
+                    errors += 'WARNING: boundaries "%s" and "%s" are touching\n' % (n, hpname)
         priority_vertexes[nid] = nset
         all_vertexes |= nset
     if errors:
-        raise RuntimeError(errors)
+        errors += "WARNING: this may cause issues when the boundaries are solving the same equations on the same regions\n" 
+        print(errors)
 
     new_surfaces = []
     removed_surfaces = set([])
@@ -338,9 +340,9 @@ def fix_surface_conflicts(dimension, surfaces, pname_map, name_priority):
         new_surfaces.extend(local_new_elements)
         all_vertexes |= local_vertexes
         if removed > 0:
-            print("removed %d/%d elements from %s for overlap with other boundary" % (removed, removed+kept, pname_map[phys_id][1]))
+            print('INFO: removed %d/%d elements from generated surface "%s" for overlap with other boundary' % (removed, removed+kept, pname_map[phys_id][1]))
         if kept == 0:
-            print("generated surface %s removed for 0 elements" % pname_map[phys_id][1])
+            print('INFO: generated surface "%s" removed for 0 elements' % pname_map[phys_id][1])
             removed_surfaces.add(phys_id)
     return new_surfaces, removed_surfaces
 
