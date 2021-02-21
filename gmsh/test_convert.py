@@ -308,10 +308,11 @@ def fix_surface_conflicts(dimension, surfaces, pname_map, name_priority):
         intersection = all_vertexes.intersection(nset)
         if intersection:
             for lid, lvertexes in priority_vertexes.items():
-                if lvertexes.intersection(nset):
+                tmp = lvertexes.intersection(nset)
+                if tmp:
                     hpname = pname_map[lid][1]
                     #errors += "overlapping elements between priority_name %s and boundary of higher priority %s\n" % (n, hpname)
-                    errors += 'WARNING: boundaries "%s" and "%s" are touching\n' % (n, hpname)
+                    errors += 'WARNING: boundaries "%s" and "%s" are touching at %d nodes\n' % (n, hpname, len(tmp))
         priority_vertexes[nid] = nset
         all_vertexes |= nset
     if errors:
@@ -325,22 +326,29 @@ def fix_surface_conflicts(dimension, surfaces, pname_map, name_priority):
             new_surfaces.extend(elements)
             continue
 
+        other_boundaries = set([])
         removed = 0
         kept = 0
         local_new_elements = []
         local_vertexes = set([])
+        
         for surface in elements:
             nset = set(surface[sl])
             if nset.intersection(all_vertexes):
                 removed += 1
+                for lid, lvertexes in priority_vertexes.items():
+                    tmp = lvertexes.intersection(nset)
+                    if tmp:
+                        other_boundaries.add('"%s"' % pname_map[lid][1])
             else:
                 kept += 1
                 local_new_elements.append(surface)
                 local_vertexes |= nset
         new_surfaces.extend(local_new_elements)
         all_vertexes |= local_vertexes
+        priority_vertexes[phys_id] = local_vertexes
         if removed > 0:
-            print('INFO: removed %d/%d elements from generated surface "%s" for overlap with other boundary' % (removed, removed+kept, pname_map[phys_id][1]))
+            print('INFO: removed %d/%d elements from generated surface "%s" for overlap with %s' % (removed, removed+kept, pname_map[phys_id][1], ", ".join(other_boundaries)))
         if kept == 0:
             print('INFO: generated surface "%s" removed for 0 elements' % pname_map[phys_id][1])
             removed_surfaces.add(phys_id)
