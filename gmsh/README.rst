@@ -17,7 +17,7 @@ Recommended Usage
 
 Create a .geo file with physical groups labeling volumes and surfaces.  The surfaces should denote contact boundary conditions.  Running the script will add interfaces.  It will also ensure that the interfaces do not share vertices with any other interfaces or contacts.
 
-The input mesh must be created with the older Gmsh format:
+The input mesh must be created with the older Gmsh format.  Using ``examples/mobility/gmsh_mos2d.msh`` in the devsim distribution as an example:
 
 ::
 

@@ -327,26 +327,24 @@ def fix_surface_conflicts(dimension, surfaces, pname_map, name_priority):
             continue
 
         other_boundaries = set([])
-        removed = 0
-        kept = 0
         local_new_elements = []
         local_vertexes = set([])
         
         for surface in elements:
             nset = set(surface[sl])
             if nset.intersection(all_vertexes):
-                removed += 1
                 for lid, lvertexes in priority_vertexes.items():
                     tmp = lvertexes.intersection(nset)
                     if tmp:
                         other_boundaries.add('"%s"' % pname_map[lid][1])
             else:
-                kept += 1
                 local_new_elements.append(surface)
                 local_vertexes |= nset
         new_surfaces.extend(local_new_elements)
         all_vertexes |= local_vertexes
         priority_vertexes[phys_id] = local_vertexes
+        kept = len(local_new_elements)
+        removed = len(elements) - kept
         if removed > 0:
             print('INFO: removed %d/%d elements from generated surface "%s" for overlap with %s' % (removed, removed+kept, pname_map[phys_id][1], ", ".join(other_boundaries)))
         if kept == 0:
