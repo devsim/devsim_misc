@@ -79,6 +79,7 @@ Removing the ``bulk_oxide_interface`` physical name in the input file fixes the 
 and the resultant physical names are the same as the previous section, with these warnings:
 
 ::
+
   removed 11/11 elements from gate_oxide for overlap with other boundary
   generated surface gate_oxide removed for 0 elements
   removed 2/152 elements from bulk_oxide for overlap with other boundary
