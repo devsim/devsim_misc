@@ -1,19 +1,35 @@
 
+# This section is to give priority to the created entities
+# and those already in the input mesh file
+# For generated interfaces, the higher priority name will be first.
+# For example, "bulk_nlayer" since "bulk" has higher priority.
 name_priority:
   - top
   - bot
   - disk
   - bulk
   - nlayer
+
+# contact_regions are used to create contacts at their interface with other regions
+# they can be removed from the final mesh by setting "remove: True"
 contact_regions:
   - contact: top_volume
     remove: True
   - contact: bot_volume
     remove: True
+
+# this section is not currently used
 regions:
   - region: disk
   - region: bulk
   - region: nlayer
+
+#
+# This section can be used to name contacts and interfaces
+# at the intersection between two regions.
+# Otherwise interfaces are generated automatically with names
+# based on the two regions (e.g. bulk_nlayer)
+#
 interfaces:
   - interface: top
     regions: [top_volume, disk]
