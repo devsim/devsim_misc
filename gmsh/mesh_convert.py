@@ -191,6 +191,7 @@ def write_elements_to_gmsh(ofh, edges, triangles, tetrahedra):
         ofh.write('%d 1 2 %s %s ' %
                   (index, str(edge[-2]), str(edge[-1])))
         ofh.write(' '.join(str(x) for x in edge[0:2]))
+        ofh.write('\n')
     for triangle in triangles:
         ofh.write('%d 2 2 %s %s ' %
                   (index, str(triangle[-2]), str(triangle[-1])))
