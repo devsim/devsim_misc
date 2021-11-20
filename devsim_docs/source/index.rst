@@ -10,6 +10,8 @@ TCAD Simulation Notes
    :maxdepth: 2
    :caption: Contents:
 
+   changes
+
    eqsystem
 
    sg

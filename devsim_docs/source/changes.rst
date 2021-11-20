@@ -1,0 +1,9 @@
+
+Changes
+-------
+
+Version 0.0.1
+~~~~~~~~~~~~~
+
+    Fixed typo for :math:`b_1` in equation :eq:`TRMETHOD`.
+

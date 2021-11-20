@@ -4,7 +4,7 @@ Transient Method
 
 .. need to confirm gamma values make sense from semiconductor simulation transient paper
 
-See :cite:`bank1270142`.
+See :cite:`bank1270142` for a description of the TRBDF2 method.
 
 Integration
 ~~~~~~~~~~~
@@ -63,6 +63,7 @@ TR
 ^^
 
 .. math::
+  :label: TRMETHOD
 
   t_{\Delta} &= \gamma t_{step}
 
@@ -74,7 +75,7 @@ TR
 
   b_0       &= 1
 
-  b_1       &= -1
+  b_1       &= 1
 
   b_2       &= 0
 
