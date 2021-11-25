@@ -1,10 +1,11 @@
 
+.. _sec_transient:
+
 Transient Method
 ----------------
 
 .. need to confirm gamma values make sense from semiconductor simulation transient paper
 
-See :cite:`bank1270142` for a description of the TRBDF2 method.
 
 Integration
 ~~~~~~~~~~~
@@ -12,9 +13,47 @@ Integration
 General Integration
 ^^^^^^^^^^^^^^^^^^^
 
+At each time step, the transient solver solves
+
 .. math::
 
-  0 = a_0 q_0 + a_1 q_1 + a_2 q_2 + b_0 i_0 + b_1 i_1 + b_2 i_2
+  0 = \boldsymbol{f}_0 = a_0 \boldsymbol{q}_0 + a_{-1} \boldsymbol{q}_{-1} + a_{-2} \boldsymbol{q}_{-2} + b_0 \boldsymbol{i}_0 + b_{-1} \boldsymbol{i}_{-1} + b_{-2} \boldsymbol{i}_{-2}
+
+where :math:`\boldsymbol{f}_0` is the vector of net flux at each node in the mesh.  The :math:`\boldsymbol{i}_x` represents the time independent part of the semiconductor equations and :math:`\boldsymbol{q}_x` represents the time derivatives terms.  The subscript :math:`0` denotes the current time step being solved.  The subscripts :math:`-1` and :math:`-2` denote the previous two time steps.
+
+At the beginning of each time step the components are copied in order so that:
+
+.. math::
+
+  \boldsymbol{i}_{-2} &= \boldsymbol{i}_{-1}
+
+  \boldsymbol{i}_{-1} &= \boldsymbol{i}_{0}
+
+  \boldsymbol{q}_{-2} &= \boldsymbol{q}_{-1}
+
+  \boldsymbol{q}_{-1} &= \boldsymbol{q}_{0}
+
+
+
+TRANSIENT_DC
+^^^^^^^^^^^^
+
+This is a steady state solution with:
+
+.. math::
+
+  a_0 &= 1
+
+  a_1 &= 0
+
+  b_0 &= 1
+
+  b_1 &= 0
+
+  b_2 &= 0
+
+and represent the DC steady state.  This step can be used to initialize the initial time step so that the other transient methods can begin.
+
 
 BDF1
 ^^^^
@@ -82,7 +121,7 @@ TR
 TRBDF2
 ^^^^^^
 
-Combination of 2 methods
+Combination of 2 methods described in :cite:`bank1270142`.
 
 .. math::
 
@@ -90,18 +129,18 @@ Combination of 2 methods
 
 and use TR followed by BDF2
 
-.. reference famous paper
 
 Projection
 ~~~~~~~~~~
 
-Calculate :math:`q_0` as part of the solution process.  Then compare with:
+Calculate :math:`\boldsymbol{q}_0` as part of the solution process.  Then compare with:
 
 .. math::
+  :label: transient_projection
 
   0 = i_1 + \frac{q_{proj} - q_1}{t_{\Delta}}
 
-  q_{proj} = i_1 t_{\Delta} + q_1
+  q_{proj} = - i_1 t_{\Delta} + q_1
 
 Calculate error between projection and actual charge solution
 
