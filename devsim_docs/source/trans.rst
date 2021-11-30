@@ -16,6 +16,7 @@ General Integration
 At each time step, the transient solver solves
 
 .. math::
+  :label: transient_solve_eq
 
   0 = \boldsymbol{f}_0 = a_0 \boldsymbol{q}_0 + a_{-1} \boldsymbol{q}_{-1} + a_{-2} \boldsymbol{q}_{-2} + b_0 \boldsymbol{i}_0 + b_{-1} \boldsymbol{i}_{-1} + b_{-2} \boldsymbol{i}_{-2}
 
@@ -34,13 +35,16 @@ At the beginning of each time step the components are copied in order so that:
   \boldsymbol{q}_{-1} &= \boldsymbol{q}_{0}
 
 
+.. _sec_transientdc:
 
 TRANSIENT_DC
 ^^^^^^^^^^^^
 
+
 This is a steady state solution with:
 
 .. math::
+  :label: TRANSIENTDCMETHOD
 
   a_0 &= 1
 
@@ -59,6 +63,7 @@ BDF1
 ^^^^
 
 .. math::
+  :label: BDF1METHOD
 
   t_\Delta &= \gamma t_{step}
 
@@ -81,6 +86,7 @@ BDF2
 ^^^^
 
 .. math::
+  :label: BDF2METHOD
 
   t_{\Delta} &= (1 - \gamma) t_{step}
 
@@ -143,4 +149,33 @@ Calculate :math:`\boldsymbol{q}_0` as part of the solution process.  Then compar
   q_{proj} = - i_1 t_{\Delta} + q_1
 
 Calculate error between projection and actual charge solution
+
+Algorithm
+~~~~~~~~~
+
+
+Initial Condition
+^^^^^^^^^^^^^^^^^
+
+Every time integration method, except for the Transient DC method in :numref:`sec_transientdc` requires a solution at a previous time step.
+
+As an alternative the :meth:`devsim.set_initial_condition` command can be used to set :math:`\boldsymbol{i}_0` and :math:`\boldsymbol{q}_0`.  These vectors can be calculated from :meth:`devsim.get_matrix_and_rhs`, which makes it possible to initialize previous time steps from equations which were not solved self consistently.
+
+Each Step
+^^^^^^^^^
+
+For each transient time step, :eq:`transient_solve_eq` is solved.  The previous time step data is shifted
+
+.. math::
+  :label: transient_shift_eq
+
+  \boldsymbol{i}_{-2} &= \boldsymbol{i}_{-1}
+
+  \boldsymbol{i}_{-1} &= \boldsymbol{i}_{0}
+
+  \boldsymbol{q}_{-2} &= \boldsymbol{q}_{-1}
+
+  \boldsymbol{q}_{-1} &= \boldsymbol{q}_{0}
+
+The Newton method iterates to find a solution for and stores new values for :math:`\boldsymbol{i}_0` and :math:`\boldsymbol{q}_0`.
 

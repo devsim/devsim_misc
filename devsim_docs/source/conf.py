@@ -143,10 +143,11 @@ latex_elements = {
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-    'preamble': '''
-        \\usepackage{mathrsfs}
-        \\usepackage{mathrsfs}
-     '''
+    'preamble': r'''
+\usepackage{mathrsfs}
+\setcounter{tocdepth}{5}
+\setcounter{secnumdepth}{5}
+'''
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
