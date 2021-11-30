@@ -177,5 +177,6 @@ For each transient time step, :eq:`transient_solve_eq` is solved.  The previous 
 
   \boldsymbol{q}_{-1} &= \boldsymbol{q}_{0}
 
+
 The Newton method iterates to find a solution for and stores new values for :math:`\boldsymbol{i}_0` and :math:`\boldsymbol{q}_0`.
 

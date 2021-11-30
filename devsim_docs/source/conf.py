@@ -147,6 +147,8 @@ latex_elements = {
 \usepackage{mathrsfs}
 \setcounter{tocdepth}{5}
 \setcounter{secnumdepth}{5}
+%\parindent=10em
+%\usepackage{indentfirst}
 '''
     # Latex figure (float) alignment
     #
