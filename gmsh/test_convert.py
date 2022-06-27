@@ -252,10 +252,9 @@ def get_interface_map(dimension, interfaces, pname_map, elem_ids, name_priority,
                 'phys_id': phys_id,
                 'elem_id': {},
             }
-            interface_map[new_name]['elem_id'][new_elem_id] = interface
-            print(new_name)
-        else:
-            raise RuntimeError("interface %s already exists" % new_name)
+
+        interface_map[new_name]['elem_id'][new_elem_id] = interface
+        print(r'INFO: Adding to interface "%s" with physical id "%d" from intersecting surface of %s' % (new_name, phys_id, str(i)))
     return interface_map, new_priority
 
 
@@ -311,7 +310,6 @@ def fix_surface_conflicts(dimension, surfaces, pname_map, name_priority):
                 tmp = lvertexes.intersection(nset)
                 if tmp:
                     hpname = pname_map[lid][1]
-                    #errors += "overlapping elements between priority_name %s and boundary of higher priority %s\n" % (n, hpname)
                     errors += 'WARNING: boundaries "%s" and "%s" are touching at %d nodes\n' % (n, hpname, len(tmp))
         priority_vertexes[nid] = nset
         all_vertexes |= nset
@@ -423,10 +421,6 @@ def run(args):
 
     interface_map, interface_priority = get_interface_map(
         dimension, interfaces, pname_map, elem_ids, name_priority, interface_names, existing_surfaces)
-
-    #interface_map = remove_connected_interface_elements(
-    #    interface_map, name_priority
-    #)
 
     surfaces = get_surface_elements(interface_map)
 
