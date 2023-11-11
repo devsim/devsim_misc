@@ -70,8 +70,8 @@ mytet = maxtet
 
 #print maxtet, max_ratio
 
-print(sum(actual_volumes))
-print(sum(tetrahedron_volumes))
+print(f"{sum(actual_volumes)}\tVolume calculated from tetrahedra edge volumes")
+print(f"{sum(tetrahedron_volumes)}\tVolume from tetrahedra")
 
 
 
