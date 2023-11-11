@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ds import *
+from devsim import *
 
 create_gmsh_mesh(file="3dblock.msh", mesh="diode3d")
 add_gmsh_region( mesh="diode3d" , gmsh_name="Bulk" , region="Bulk" , material="Silicon")
@@ -32,7 +32,7 @@ y=get_node_model_values(device=device, region=region, name="y")
 z=get_node_model_values(device=device, region=region, name="z")
 
 import numpy
-coordinate = numpy.matrix(zip(x, y, z))
+coordinate = numpy.matrix([list(a) for a in zip(x, y, z)])
 
 #print coordinate[1]
 vol = 0.0
@@ -54,7 +54,7 @@ for tet_index, e in enumerate(elements):
 ratios = [actual_volumes[i] / tetrahedron_volumes[i] for i in range(len(actual_volumes))]
 #for i in range(len(actual_volumes)):
 for i in range(6):
-    print i, actual_volumes[i], tetrahedron_volumes[i], ratios[i]
+    print(i, actual_volumes[i], tetrahedron_volumes[i], ratios[i])
 
 max_ratio = 0;
 mytet = None;
@@ -63,15 +63,15 @@ for i, ratio in enumerate(ratios):
         max_ratio = ratio
         maxtet = i
     if ratio > 1:
-        print i, ratio
+        print(i, ratio)
 
 mytet = maxtet
-mytet = 0
+#mytet = 0
 
 #print maxtet, max_ratio
 
-print sum(actual_volumes)
-print sum(tetrahedron_volumes)
+print(sum(actual_volumes))
+print(sum(tetrahedron_volumes))
 
 
 
@@ -96,22 +96,22 @@ for i in range(3):
     myrhs[i] = 0.5*numpy.dot(v, v.T)
     mymat[i,:] = coordinate[ni] - coordinate[n0]
 
-print mymat
-print myrhs
+print(mymat)
+print(myrhs)
 foo = numpy.linalg.solve(mymat, myrhs) + coordinate[n0].T
 
 for i in range(4):
     ni = elements[mytet][i]
     v = coordinate[ni] - foo.T
-    print numpy.linalg.norm(v)
+    print(numpy.linalg.norm(v))
     radius = numpy.linalg.norm(v)
-    print
+    print()
 
 #exit()
 #print foo + coordinate[n0].T
 #exit()
 
-print mypoints
+print(mypoints)
 
 #print element_node_volumes[6*mytet:6*(mytet+1)]
 
@@ -131,9 +131,9 @@ for i in range(4):
 
 for i in range(4):
     ax.plot(
-        (xs[i], foo[0]),
-          (ys[i], foo[1]),
-          (zs[i], foo[2]), 'k'
+        (xs[i], foo[0].item()),
+          (ys[i], foo[1].item()),
+          (zs[i], foo[2].item()), 'k'
     )
 mid_x = foo[0]
 mid_y = foo[1]
