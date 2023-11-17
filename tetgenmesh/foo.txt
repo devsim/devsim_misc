@@ -1,0 +1,306 @@
+Opening test.poly.
+  Initializing memorypools.
+  tetrahedron per block: 8188.
+  Size of a point: 144 bytes.
+  Size of a tetrahedron: 112 (112) bytes.
+  Size of a shellface: 200 (200) bytes.
+  Initializing robust predicates.
+  sizeof(double) =  8
+  machine epsilon =   2.22045e-16 [IEEE 754 64-bit macheps]
+Delaunizing vertices...
+  Permuting vertices.
+  Sorting vertices.
+  Incrementally inserting vertices.
+Delaunay seconds:  0.000103
+  Point sorting seconds:  1.3e-05
+Creating surface mesh ...
+  12 (12) subfaces (segments).
+Surface mesh seconds:  7.6e-05
+Constrained Delaunay...
+  Creating the segment-endpoints map.
+  Found 12 segments.
+  Creating the facet vertices map.
+  Found 6 facets.
+  Delaunizing segments.
+  Inserted 0 Steiner points.
+  Constraining facets.
+  Remeshed 1 regions.
+Constrained Delaunay seconds:  5.8e-05
+  Segment recovery seconds:  3e-05
+  Facet recovery seconds:  2.8e-05
+Removing exterior tetrahedra ...
+Spreading region attributes.
+  Found 1 domain.
+Exterior tets removal seconds:  1.6e-05
+Refining mesh...
+  Min radius-edge ratio = 2.
+  Min dihedral   angle  = 0.
+  Splitting encroached subsegments.
+  Added 0 Steiner points.
+  Splitting encroached subfaces.
+  Added 18 (12,6) Steiner points.
+  Splitting bad quality tets.
+  Added 0 (0,0,0) Steiner points.
+  Performed 18 flips.
+Refinement seconds:  0.000965
+Optimizing mesh...
+  Optimization level  = 7.
+  Optimization scheme = 7.
+  Number of iteration = 127.
+  Min_Max dihed angle = 165.
+Optimization seconds:  1.7e-05
+
+Writing test.1.node.
+Writing test.1.ele.
+Writing test.1.face.
+Writing test.1.edge.
+
+Output seconds:  0.000741
+Total running seconds:  0.002053
+
+Statistics:
+
+  Input points: 8
+  Input facets: 6
+  Input segments: 12
+  Input holes: 0
+  Input regions: 1
+
+  Mesh points: 26
+  Mesh tetrahedra: 36
+  Mesh faces: 96
+  Mesh faces on exterior boundary: 48
+  Mesh faces on input facets: 48
+  Mesh edges on input segments: 24
+  Steiner points on input facets:  6
+  Steiner points on input segments:  12
+
+Mesh quality statistics:
+
+  Smallest volume:         0.020833   |  Largest volume:         0.041667
+  Shortest edge:                0.5   |  Longest edge:                  1
+  Smallest asp.ratio:        1.2247   |  Largest asp.ratio:        2.4495
+  Smallest facangle:             45   |  Largest facangle:       90
+  Smallest dihedral:         54.736   |  Largest dihedral:       109.4712
+
+  Aspect ratio histogram:
+         < 1.5       :         8      |      6 - 10         :         0
+     1.5 - 2         :         4      |     10 - 15         :         0
+       2 - 2.5       :        24      |     15 - 25         :         0
+     2.5 - 3         :         0      |     25 - 50         :         0
+       3 - 4         :         0      |     50 - 100        :         0
+       4 - 6         :         0      |    100 -            :         0
+  (A tetrahedron's aspect ratio is its longest edge length divided by its
+    smallest side height)
+
+  Face angle histogram:
+      0 -  10 degrees:         0      |     90 - 100 degrees:        38
+     10 -  20 degrees:         0      |    100 - 110 degrees:         0
+     20 -  30 degrees:         0      |    110 - 120 degrees:         0
+     30 -  40 degrees:         0      |    120 - 130 degrees:         0
+     40 -  50 degrees:       128      |    130 - 140 degrees:         0
+     50 -  60 degrees:        32      |    140 - 150 degrees:         0
+     60 -  70 degrees:        64      |    150 - 160 degrees:         0
+     70 -  80 degrees:         0      |    160 - 170 degrees:         0
+     80 -  90 degrees:        26      |    170 - 180 degrees:         0
+
+  Dihedral angle histogram:
+       0 -  5 degrees:         0      |     80 - 110 degrees:        80
+       5 - 10 degrees:         0      |    110 - 120 degrees:         0
+      10 - 20 degrees:         0      |    120 - 130 degrees:         0
+      20 - 30 degrees:         0      |    130 - 140 degrees:         0
+      30 - 40 degrees:         0      |    140 - 150 degrees:         0
+      40 - 50 degrees:         0      |    150 - 160 degrees:         0
+      50 - 60 degrees:        88      |    160 - 170 degrees:         0
+      60 - 70 degrees:         0      |    170 - 175 degrees:         0
+      70 - 80 degrees:        48      |    175 - 180 degrees:         0
+  Minimum input dihedral angle is 90 (degree).
+
+
+Memory usage statistics:
+
+  Maximum number of tetrahedra:  96
+  Maximum number of tet blocks (blocksize = 8188):  1
+  Approximate memory for tetrahedral mesh (bytes):  29,496
+  Approximate memory for extra pointers (bytes):  6,064
+  Approximate memory for algorithms (bytes):  133,696
+  Approximate memory for working arrays (bytes):  57,404
+  Approximate total used memory (bytes):  226,660
+
+bad 24/36 66.6667% vol 1 1.5
+Opening test.poly.
+Opening test.b.node.
+Opening test.b.ele.
+Opening test.b.mtr.
+  Initializing memorypools.
+  tetrahedron per block: 8188.
+  Size of a point: 160 bytes.
+  Size of a tetrahedron: 112 (112) bytes.
+  Size of a shellface: 200 (200) bytes.
+  Initializing robust predicates.
+  sizeof(double) =  8
+  machine epsilon =   2.22045e-16 [IEEE 754 64-bit macheps]
+Delaunizing vertices...
+  Permuting vertices.
+  Sorting vertices.
+  Incrementally inserting vertices.
+Delaunay seconds:  0.000109
+  Point sorting seconds:  1.1e-05
+Creating surface mesh ...
+  12 (12) subfaces (segments).
+Surface mesh seconds:  7.4e-05
+  Initializing memorypools.
+  tetrahedron per block: 8188.
+  Size of a point: 144 bytes.
+  Size of a tetrahedron: 120 (128) bytes.
+  Size of a shellface: 200 (200) bytes.
+Reconstructing mesh ...
+Background mesh reconstruct seconds:  7.6e-05
+Interpolating mesh size ...
+  Interoplated 8 points.
+  Size rangle [0.375, 0.375].
+Size interpolating seconds:  3.8e-05
+Constrained Delaunay...
+  Creating the segment-endpoints map.
+  Found 12 segments.
+  Creating the facet vertices map.
+  Found 6 facets.
+  Delaunizing segments.
+  Inserted 0 Steiner points.
+  Constraining facets.
+  Remeshed 1 regions.
+Constrained Delaunay seconds:  5.6e-05
+  Segment recovery seconds:  2.8e-05
+  Facet recovery seconds:  2.8e-05
+Removing exterior tetrahedra ...
+Spreading region attributes.
+  Found 1 domain.
+Exterior tets removal seconds:  1.3e-05
+Refining mesh...
+  Min radius-edge ratio = 2.
+  Min dihedral   angle  = 0.
+  Splitting encroached subsegments.
+  Added 12 Steiner points.
+  Splitting encroached subfaces.
+  Added 6 (0,6) Steiner points.
+  Splitting bad quality tets.
+  Added 9 (0,8,1) Steiner points.
+  Performed 53 flips.
+Refinement seconds:  0.001739
+Optimizing mesh...
+  Optimization level  = 2.
+  Optimization scheme = 7.
+  Number of iteration = 3.
+  Min_Max dihed angle = 165.
+Optimization seconds:  2.7e-05
+
+Writing test.1.node.
+Writing test.1.ele.
+Writing test.1.face.
+Writing test.1.edge.
+Writing test.1.mtr.
+Writing test.1.p2t.
+
+Output seconds:  0.000895
+Total running seconds:  0.003107
+
+Statistics:
+
+  Input points: 8
+  Input facets: 6
+  Input segments: 12
+  Input holes: 0
+  Input regions: 1
+
+  Mesh points: 35
+  Mesh tetrahedra: 80
+  Mesh faces: 192
+  Mesh faces on exterior boundary: 64
+  Mesh faces on input facets: 64
+  Mesh edges on input segments: 24
+  Steiner points on input facets:  14
+  Steiner points on input segments:  12
+  Steiner points inside domain: 1
+
+Mesh quality statistics:
+
+  Smallest volume:         0.010417   |  Largest volume:         0.020833
+  Shortest edge:            0.35355   |  Longest edge:            0.70711
+  Smallest asp.ratio:             2   |  Largest asp.ratio:        3.1623
+  Smallest facangle:             30   |  Largest facangle:       90.00000
+  Smallest dihedral:         26.565   |  Largest dihedral:       129.2315
+
+  Aspect ratio histogram:
+         < 1.5       :         0      |      6 - 10         :         0
+     1.5 - 2         :         0      |     10 - 15         :         0
+       2 - 2.5       :        16      |     15 - 25         :         0
+     2.5 - 3         :        32      |     25 - 50         :         0
+       3 - 4         :        32      |     50 - 100        :         0
+       4 - 6         :         0      |    100 -            :         0
+  (A tetrahedron's aspect ratio is its longest edge length divided by its
+    smallest side height)
+
+  Face angle histogram:
+      0 -  10 degrees:         0      |     90 - 100 degrees:       137
+     10 -  20 degrees:         0      |    100 - 110 degrees:         0
+     20 -  30 degrees:        32      |    110 - 120 degrees:         0
+     30 -  40 degrees:        32      |    120 - 130 degrees:         0
+     40 -  50 degrees:       208      |    130 - 140 degrees:         0
+     50 -  60 degrees:        48      |    140 - 150 degrees:         0
+     60 -  70 degrees:        96      |    150 - 160 degrees:         0
+     70 -  80 degrees:         8      |    160 - 170 degrees:         0
+     80 -  90 degrees:        15      |    170 - 180 degrees:         0
+
+  Dihedral angle histogram:
+       0 -  5 degrees:         0      |     80 - 110 degrees:       128
+       5 - 10 degrees:         0      |    110 - 120 degrees:         0
+      10 - 20 degrees:         0      |    120 - 130 degrees:        64
+      20 - 30 degrees:        32      |    130 - 140 degrees:         0
+      30 - 40 degrees:        64      |    140 - 150 degrees:         0
+      40 - 50 degrees:        64      |    150 - 160 degrees:         0
+      50 - 60 degrees:        96      |    160 - 170 degrees:         0
+      60 - 70 degrees:        32      |    170 - 175 degrees:         0
+      70 - 80 degrees:         0      |    175 - 180 degrees:         0
+  Minimum input dihedral angle is 90 (degree).
+
+
+Memory usage statistics:
+
+  Maximum number of tetrahedra:  152
+  Maximum number of tet blocks (blocksize = 8188):  1
+  Approximate memory for tetrahedral mesh (bytes):  40,824
+  Approximate memory for extra pointers (bytes):  8,976
+  Approximate memory for algorithms (bytes):  144,576
+  Approximate memory for working arrays (bytes):  58,764
+  Approximate total used memory (bytes):  253,140
+
+bad 0/80 0% vol 1 1
+['top', 'bot', 'bulk']
+Physical group name bot has 0 Tetrahedra.
+Physical group name bot has 8 Triangles.
+Physical group name bot has 16 Lines.
+Physical group name bot has 9 Points.
+Physical group name bulk has 80 Tetrahedra.
+Physical group name bulk has 192 Triangles.
+Physical group name bulk has 146 Lines.
+Physical group name bulk has 35 Points.
+Physical group name top has 0 Tetrahedra.
+Physical group name top has 12 Triangles.
+Physical group name top has 22 Lines.
+Physical group name top has 11 Points.
+Device test has 35 coordinates with max index 34
+Region bulk has 35 nodes.
+Contact bot in region bulk with 9 nodes
+Contact top in region bulk with 11 nodes
+Adding 35 nodes
+Adding 146 edges with 0 duplicates removed
+Adding 192 triangles  with 0 duplicate removed
+Adding 80 tetrahedra  with 0 duplicate removed
+Contact bot in region bulk with 9 nodes
+Contact top in region bulk with 11 nodes
+bad_count 0 / 80 = 0%
+actual 1
+tetra  1
+0.0104167 actual
+0.0104167 tetra
+0.0104167 fcenter
