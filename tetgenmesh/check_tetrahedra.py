@@ -253,3 +253,10 @@ if __name__ == "__main__":
     print(sum(element_node_volumes[6*maxtet:6*maxtet+6]))
     print(actual_volumes[maxtet])
     print(tetrahedron_volumes[maxtet])
+
+    print(coordinate)
+    print(elements)
+    print('start centers')
+    for e in elements:
+        center, radius = get_center(get_element_coordinates(coordinate, e))
+        print(center)
