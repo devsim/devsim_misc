@@ -18,6 +18,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+if False:
+    set_parameter(name = "extended_solver", value=True)
+    set_parameter(name = "extended_model", value=True)
+    set_parameter(name = "extended_equation", value=True)
+
 def get_center(ecoordinate):
     mymat = np.zeros((3, 3))
     myrhs = np.zeros((3,1))
@@ -84,10 +89,6 @@ def plot_tetrahedron(ax, xs, ys, zs, center, radius):
     #ax.set_ylim(mid_y - max_range, mid_y + max_range)
     #ax.set_zlim(mid_z - max_range, mid_z + max_range)
 
-#if not get_parameter(name='info')['extended_precision']:
-#  set_parameter(name = "extended_solver", value=True)
-#  set_parameter(name = "extended_model", value=True)
-#  set_parameter(name = "extended_equation", value=True)
 
 def get_element_coordinates(coordinate, element):
     c = [coordinate[element[i]] for i in range(4)]
@@ -132,7 +133,8 @@ if __name__ == "__main__":
     for tet_index, e in enumerate(elements):
         tet_vol = get_tet_volume(get_element_coordinates(coordinate, e))
         tetrahedron_volumes[tet_index] = tet_vol
-        actual_vol = sum([abs(q) for q in element_node_volumes[6*tet_index:6*(tet_index+1)]])
+        actual_vol = sum([q for q in element_node_volumes[6*tet_index:6*(tet_index+1)]])
+        #actual_vol = sum([abs(q) for q in element_node_volumes[6*tet_index:6*(tet_index+1)]])
         actual_volumes[tet_index] = 2*actual_vol
 
 
@@ -186,7 +188,7 @@ if __name__ == "__main__":
 
     #print element_node_volumes[6*mytet:6*(mytet+1)]
 
-    if True:
+    if False:
         i = 0
         c = get_element_coordinates(coordinate, elements[i])
         center, radius = get_center(c)
@@ -240,3 +242,14 @@ if __name__ == "__main__":
         write_background.write_nodes("refine.node", orgpoints)
         #print(orgpoints)
     #print(points)
+
+# debugging elementedgecouple based volume for maxtet
+    maxtet = 0
+    element_model(device=device, region=region, name='DerivedEdgeVolume', equation='1./6. * ElementEdgeCouple * EdgeLength')
+    evol = get_element_model_values(device=device, region=region, name='DerivedEdgeVolume')
+    print(evol[6*maxtet:6*maxtet+6])
+    print(sum(evol[6*maxtet:6*maxtet+6]))
+    print(element_node_volumes[6*maxtet:6*maxtet+6])
+    print(sum(element_node_volumes[6*maxtet:6*maxtet+6]))
+    print(actual_volumes[maxtet])
+    print(tetrahedron_volumes[maxtet])
