@@ -219,6 +219,10 @@ begin_edge_model "EdgeLength"
 BUILTIN
 end_edge_model
 
+begin_edge_model "EdgeNodeVolume"
+BUILTIN
+end_edge_model
+
 begin_edge_model "edge_index"
 BUILTIN
 end_edge_model
