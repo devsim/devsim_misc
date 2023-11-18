@@ -244,19 +244,19 @@ if __name__ == "__main__":
     #print(points)
 
 # debugging elementedgecouple based volume for maxtet
-    maxtet = 0
-    element_model(device=device, region=region, name='DerivedEdgeVolume', equation='1./6. * ElementEdgeCouple * EdgeLength')
-    evol = get_element_model_values(device=device, region=region, name='DerivedEdgeVolume')
-    print(evol[6*maxtet:6*maxtet+6])
-    print(sum(evol[6*maxtet:6*maxtet+6]))
-    print(element_node_volumes[6*maxtet:6*maxtet+6])
-    print(sum(element_node_volumes[6*maxtet:6*maxtet+6]))
-    print(actual_volumes[maxtet])
-    print(tetrahedron_volumes[maxtet])
-
-    print(coordinate)
-    print(elements)
-    print('start centers')
-    for e in elements:
-        center, radius = get_center(get_element_coordinates(coordinate, e))
-        print(center)
+#    maxtet = 0
+#    element_model(device=device, region=region, name='DerivedEdgeVolume', equation='1./6. * ElementEdgeCouple * EdgeLength')
+#    evol = get_element_model_values(device=device, region=region, name='DerivedEdgeVolume')
+#    print(evol[6*maxtet:6*maxtet+6])
+#    print(sum(evol[6*maxtet:6*maxtet+6]))
+#    print(element_node_volumes[6*maxtet:6*maxtet+6])
+#    print(sum(element_node_volumes[6*maxtet:6*maxtet+6]))
+#    print(actual_volumes[maxtet])
+#    print(tetrahedron_volumes[maxtet])
+#
+#    print(coordinate)
+#    print(elements)
+#    print('start centers')
+#    for e in elements:
+#        center, radius = get_center(get_element_coordinates(coordinate, e))
+#        print(center)
