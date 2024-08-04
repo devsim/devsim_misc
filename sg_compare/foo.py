@@ -34,6 +34,6 @@ for i in range(0,2):
     pdiffs.append(abs(y[i]-y[2])/y[2])
     ax[1].semilogy(x,pdiffs[-1])
 ax[1].legend(['$|B3-B1|/B3$', '$|B3-B2|/B3$'])
-plt.show()
 plt.savefig('foo.pdf')
+plt.show()
 
