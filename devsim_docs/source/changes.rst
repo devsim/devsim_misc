@@ -2,6 +2,11 @@
 Changes
 -------
 
+Version 0.0.3
+~~~~~~~~~~~~~
+
+    Add new method for Bernoulli function evaluation in :ref:`sec_bernoulli_new`.
+
 Version 0.0.2
 ~~~~~~~~~~~~~
 

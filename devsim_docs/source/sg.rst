@@ -165,6 +165,36 @@ or
 Evaluate Bernoulli
 ~~~~~~~~~~~~~~~~~~
 
+.. _sec_bernoulli_new:
+
+New Method
+^^^^^^^^^^
+
+The C++ standard library provides the ``expm1`` function
+
+.. math::
+
+  \text{expm1}(x) = \exp(x) - 1
+
+which is more accurate than subtracting ``1`` from ``exp(x)``.
+
+A sample implementation is:
+
+.. code::
+
+  def B(x):
+    y = expm1(x)
+    if x != y:
+      b = 1.0/y
+    else:
+      b = 1.0 / (1. + 0.5*x)
+    return b
+
+Note that the check for ``x != y`` prevents a bad result when ``x == 0``.
+
+Old Method
+^^^^^^^^^^
+
 This requires an expansion near :math:`0` and use of :eq:`hf4`.
 
 .. math::
